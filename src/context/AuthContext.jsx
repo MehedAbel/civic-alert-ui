@@ -73,19 +73,31 @@ export default function AuthProvider({ children }) {
         navigate('/login');
     }
 
-    // async function fetchWithAuth(url, options = {}) {
-    //     let response = await fetch(url, { ...options, credentials: 'include' });
-    //     if (response.status === 401) {
-    //         const refreshed = await refreshToken();
-    //         if (refreshed) {
-    //             response = await fetch(url, { ...options, credentials: 'include' });
-    //         }
-    //     }
-    //     return response;
-    // }
+    async function fetchWithAuth(url, options = {}) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw Error('No token found!');
+        }
+    
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            ...options.headers
+        };
+    
+        const config = {
+            method: options.method || 'GET',
+            ...options,
+            headers
+        };
+
+        let response = await fetch(url, config);
+
+        return response;
+    }
 
     return (
-        <AuthContext.Provider value={{ login, logout, isAuthenticated, setIsAuthenticated, role, setRole, email, setEmail }}>
+        <AuthContext.Provider value={{ login, logout, isAuthenticated, setIsAuthenticated, role, setRole, email, setEmail, fetchWithAuth }}>
             {children}
         </AuthContext.Provider>
     );
