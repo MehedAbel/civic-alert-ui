@@ -7,20 +7,23 @@ import sha256 from 'js-sha256';
 import { API_URL } from '../../../config.js';
 import { REGEX, errorMessages } from '../../../constants/Validations.js';
 
-import Page from '../Forms/Page.jsx'
-import AuthFormContainer from '../Forms/AuthFormContainer.jsx';
-import AuthForm from '../Forms/AuthForm.jsx';
-import Title from '../Forms/Title.jsx';
-import Input from '../Forms/Input.jsx';
-import SubmitButton from '../Forms/SubmitButton.jsx';
-import Error from '../../Error/Error.jsx';
-import Logo from '../Forms/Logo.jsx';
+import Loader from '../../Modal/Loader/Loader.jsx';
+import Page from '../Form/Page.jsx'
+import AuthFormContainer from '../Form/AuthFormContainer.jsx';
+import AuthForm from '../Form/AuthForm.jsx';
+import Title from '../Form/Title.jsx';
+import Input from '../Form/Input.jsx';
+import SubmitButton from '../Form/SubmitButton.jsx';
+import ErrorMessage from '../../Error/Error.jsx';
+import Logo from '../Form/Logo.jsx';
 
 const CompleteRegister = () => {
     const { login } = useAuth();
 
     const navigate = useNavigate();
-    
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState('Finishing Registration');
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
 
@@ -78,12 +81,12 @@ const CompleteRegister = () => {
         }
 
         if (errorMessage) {
-            return <Error errorMessage={errorMessage} id={fieldName + 'Error'} />;
+            return <ErrorMessage errorMessage={errorMessage} id={fieldName + 'Error'} />;
         }
 
         // keep the error message in the DOM for screen readers
         return (
-            <Error
+            <ErrorMessage
                 errorMessage={invalidFieldError}
                 id={fieldName + 'Error'}
                 style={{ position: 'absolute', left: '-99999px' }}
@@ -116,7 +119,8 @@ const CompleteRegister = () => {
         const hashedPassword = sha256(formValues.password);
 
         try {
-            const response = await fetch(`${API_URL}/api/auth/complete-register`, {
+            setIsLoading(true);
+            const response = await fetch(`${API_URL}/api/auth/register/confirm`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -128,12 +132,13 @@ const CompleteRegister = () => {
             });
 
             if (!response.ok) {
-                throw Error('Something went wrong!');
+                throw Error('Response status not ok!');
             }
 
             const data = await response.json();
             if (data) {
                 try {
+                    setLoadingMessage('Logging in');
                     await login(data.email, hashedPassword);
                 } catch(error) {
                     console.error(error.message);
@@ -147,16 +152,19 @@ const CompleteRegister = () => {
             console.error(error.message);
             setFormError(error.message);
             formErrorRef.current.focus();
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <Page>  
+            {isLoading && <Loader message={loadingMessage}/>} 
             <AuthFormContainer>
                 <Logo />
                 <Title title='Set Password'/>
                 <AuthForm onSubmit={submit} noValidate>
-                    <Error errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
+                    <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
 
                     <Input
                         label='Password'

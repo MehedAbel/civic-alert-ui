@@ -17,6 +17,7 @@ export default function AuthProvider({ children }) {
 
     useEffect(() => {
         setIsAuthenticated(localStorage.getItem('isAuthenticated') == 'true');
+        setEmail(localStorage.getItem('email'));
         setRole(localStorage.getItem('role'));
     }, []);
 
@@ -33,33 +34,27 @@ export default function AuthProvider({ children }) {
                 })
             });
 
-            if (!response.ok) {
+            if (response.status !== 200) {
                 if (response.status === 400) throw Error('Email or Password incorrect!');
-                throw Error('Something went wrong with the responses!');
+                throw Error('Response status not ok!');
             }
 
             const data = await response.json();
             if (data) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('isAuthenticated', true);
-                localStorage.setItem('role', data.role);
+                localStorage.setItem('role', data.userType);
                 localStorage.setItem('email', data.email);
 
                 setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
-                setEmail(localStorage.getItem(data.email));
+                setEmail(localStorage.getItem('email'));
                 setRole(localStorage.getItem('role'));
 
-                if (role == 'admin') {
-                    navigate('/admin-page');
-                } else if (role == 'client') {
-                    navigate('/client-page');
-                } else if (role == 'official') {
-                    navigate('/official-page');
-                }
+                navigate('/');
 
                 return data;
             } else {
-                throw Error('Something went wrong with the data received at login!');
+                throw Error('No data received!');
             }
 
         } catch(error) {
@@ -68,23 +63,14 @@ export default function AuthProvider({ children }) {
     }
 
     async function logout() {
-        try {
-            const response = await fetch(`${API_URL}/api/auth/logout`, { method: 'POST', credentials: 'include' });
-            if (!response.ok) {
-                throw new Error('Logout Failed');
-            } else {
-                localStorage.removeItem('token');
-                localStorage.removeItem('isAthenticated');
-                localStorage.removeItem('role');
-                localStorage.removeItem('email');
-                setIsAuthenticated(false);
-                setEmail(null);
-                setRole(null);
-                navigate('/login');
-            }
-        } catch (error) {
-            console.error(error);
-        }
+        localStorage.removeItem('token');
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('role');
+        localStorage.removeItem('email');
+        setIsAuthenticated(false);
+        setEmail(null);
+        setRole(null);
+        navigate('/login');
     }
 
     // async function fetchWithAuth(url, options = {}) {

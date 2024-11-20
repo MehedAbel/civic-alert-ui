@@ -3,23 +3,27 @@ import { useAuth } from '../../../context/AuthContext.jsx';
 
 import sha256 from 'js-sha256';
 
-import Page from '../Forms/Page.jsx'
-import AuthFormContainer from '../Forms/AuthFormContainer.jsx';
-import AuthForm from '../Forms/AuthForm.jsx';
-import Title from '../Forms/Title.jsx';
-import Input from '../Forms/Input.jsx';
-import SubmitButton from '../Forms/SubmitButton.jsx';
-import Error from '../../Error/Error.jsx';
-import Logo from '../Forms/Logo.jsx';
+import Loader from '../../Modal/Loader/Loader.jsx';
+import Page from '../Form/Page.jsx'
+import AuthFormContainer from '../Form/AuthFormContainer.jsx';
+import AuthForm from '../Form/AuthForm.jsx';
+import Title from '../Form/Title.jsx';
+import Input from '../Form/Input.jsx';
+import SubmitButton from '../Form/SubmitButton.jsx';
+import ErrorMessage from '../../Error/Error.jsx';
+import Logo from '../Form/Logo.jsx';
 
 const Login = () => {
     const { login } = useAuth();
 
+    const [isLoading, setIsLoading] = useState(false);
     const [wasFormSubmitted, setWasFormSubmitted] = useState(false);
     const [formError, setFormError] = useState('');
 
+    const [rememberMe, setRememberMe] = useState(false);
+
     const [formValues, setFormValues] = useState({
-        email: '',
+        email: localStorage.getItem('rememberedEmail') || '',
         password: '',
     });
 
@@ -52,21 +56,26 @@ const Login = () => {
         const hashedPassword = sha256(formValues.password);
 
         try {
+            setIsLoading(true);
             await login(formValues.email, hashedPassword);
         } catch(error) {
             console.error(error.message);
             setFormError(error.message);
             formErrorRef.current.focus();
+        } finally {
+            rememberMe ? localStorage.setItem('rememberedEmail', formValues.email) : localStorage.removeItem('rememberedEmail');
+            setIsLoading(false);
         }
     };
 
     return (
-        <Page> 
+        <Page>
+            {isLoading && <Loader message='Logging in'/>} 
             <AuthFormContainer>
                 <Logo />
                 <Title title='Welcome'/>
                 <AuthForm onSubmit={submit} noValidate>
-                    <Error errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
+                    <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
 
                     <Input 
                         label='Email'
@@ -92,9 +101,25 @@ const Login = () => {
                         required
                     />
 
-                    <p className="text-center mt-6 mb-3">
+                    <div className='flex items-center justify-between w-full text-sm'>
+                        <div className='flex items-center'>
+                            <input 
+                                type="checkbox" 
+                                name="remember" 
+                                className='mr-2 w-4 h-4'
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                            />
+                            <label htmlFor="remember">Remember Me</label>
+                        </div>
+                        <a href="/forgot-password" className="text-ocean-200 hover:underline">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <p className="text-center mt-9 mb-3 text-sm">
                         Don&apos;t have an account?{' '}
-                        <a href="/register" className="text-blue-500 underline">
+                        <a href="/register" className="text-ocean-200 hover:underline">
                             Sign Up
                         </a>
                     </p>

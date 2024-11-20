@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '450px'
+      },
       colors: {
         'ocean-light': '#0a87d6',
         'ocean-200': '#088cde',

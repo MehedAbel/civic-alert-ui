@@ -3,16 +3,19 @@ import { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../../../config';
 import { REGEX, errorMessages } from '../../../constants/Validations.js';
 
-import Page from '../Forms/Page.jsx'
-import AuthFormContainer from '../Forms/AuthFormContainer.jsx';
-import AuthForm from '../Forms/AuthForm.jsx';
-import Title from '../Forms/Title.jsx';
-import Input from '../Forms/Input.jsx';
-import SubmitButton from '../Forms/SubmitButton.jsx';
-import Error from '../../Error/Error.jsx';
-import Logo from '../Forms/Logo.jsx';
+import Loader from '../../Modal/Loader/Loader.jsx';
+import Page from '../Form/Page.jsx'
+import AuthFormContainer from '../Form/AuthFormContainer.jsx';
+import AuthForm from '../Form/AuthForm.jsx';
+import Title from '../Form/Title.jsx';
+import Input from '../Form/Input.jsx';
+import SubmitButton from '../Form/SubmitButton.jsx';
+import ErrorMessage from '../../Error/Error.jsx';
+import Logo from '../Form/Logo.jsx';
 
 const Register = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const [isSuccessful, setIsSuccessful] = useState(false);
     const [wasFormSubmitted, setWasFormSubmitted] = useState(false);
     const [formError, setFormError] = useState('');
@@ -66,12 +69,12 @@ const Register = () => {
         }
 
         if (errorMessage) {
-            return <Error errorMessage={errorMessage} id={fieldName + 'Error'} />;
+            return <ErrorMessage errorMessage={errorMessage} id={fieldName + 'Error'} />;
         }
 
         // keep the error message in the DOM for screen readers
         return (
-            <Error
+            <ErrorMessage
                 errorMessage={invalidFieldError}
                 id={fieldName + 'Error'}
                 style={{ position: 'absolute', left: '-99999px' }}
@@ -102,6 +105,7 @@ const Register = () => {
             }
         }
 
+        setIsLoading(true);
         fetch(`${API_URL}/api/auth/register`, {
             method: 'POST',
             headers: {
@@ -113,37 +117,32 @@ const Register = () => {
                 email: formValues.email,
             })
         })
-            .then((response) => {
-                if (!response.ok) {
-                    {
-                        if (response.status === 400) throw Error('Email already exists');
-                        else throw Error('Something went wrong!');
-                    }
+        .then((response) => {
+            if (!response.ok) {
+                {
+                    if (response.status === 400) throw Error('Email already exists');
+                    else throw Error('Response status not ok!');
                 }
-                return response.json();
-            })
-            .then((user) => {
-                if (user) {
-                    setIsSuccessful(true);
-                } else {
-                    throw Error('Something went wrong!');
-                }
-            })
-            .catch((error) => {
-                console.error(error.message);
-                setFormError(error.message);
-                formErrorRef.current.focus();
-            });
+            } else {
+                setIsSuccessful(true);
+            }
+        })
+        .catch((error) => {
+            console.error(error.message);
+            setFormError(error.message);
+            formErrorRef.current.focus();
+        }).finally(() => setIsLoading(false));
     };
 
     return (
         <Page>
+            {isLoading && <Loader message='Registering'/>} 
             {/* <button onClick={() => setIsSuccessful(!isSuccessful)} className='bg-blue-500 hover:bg-blue-600 rounded-md text-white p-2 w-36'> Show / Hide </button> */}
             <AuthFormContainer>
                 <Logo />
                 <Title title='Register' className={isSuccessful && 'hidden'}/>
                 <AuthForm onSubmit={submit} noValidate className={isSuccessful && 'hidden'}>
-                    <Error errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
+                    <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
                     
                     <Input
                         label='First Name'
@@ -187,9 +186,9 @@ const Register = () => {
                         {getErrorMessage('email')}
                     </Input>
                     
-                    <p className="text-centero mt-6 mb-3">
+                    <p className="text-centero mt-6 mb-3 text-sm">
                         Already have an account?{' '}
-                        <a href="/login" className="text-blue-500 underline">
+                        <a href="/login" className="text-ocean-200 hover:underline">
                             Log In
                         </a>
                     </p>
