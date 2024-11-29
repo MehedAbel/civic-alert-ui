@@ -34,8 +34,8 @@ export default function AuthProvider({ children }) {
                 })
             });
 
-            if (response.status !== 200) {
-                if (response.status === 400) throw Error('Email or Password incorrect!');
+            if (!response.ok) {
+                if (response.status === 404) throw Error('Email or Password incorrect!');
                 throw Error('Response status not ok!');
             }
 
