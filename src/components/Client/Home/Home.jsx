@@ -7,7 +7,8 @@ import User from '../../../assets/user.png';
 import './Home.css';
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { Icon, divIcon } from 'leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 
 const Home = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
@@ -31,6 +32,12 @@ const Home = () => {
         iconUrl: "/src/assets/pin-marker.png",
         iconSize: [38, 38]
     });
+
+    // const createCustomClusterIcon = (cluster) => {
+    //     return new divIcon({
+    //         html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
+    //     })
+    // };
 
     return (
         <div className='h-screen'>
@@ -63,18 +70,23 @@ const Home = () => {
                         url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
                     />
 
-                    {
-                        markers.map((marker, index) => (
-                            <Marker 
-                                position={marker.geocode} 
-                                icon={customIcon}
-                            >
-                                <Popup>
-                                    <h2>{marker.popUp}</h2>
-                                </Popup>
-                            </Marker>
-                        ))
-                    }
+                    <MarkerClusterGroup
+                        chunkedLoading
+                        // iconCreateFunction={createCustomClusterIcon}
+                    >
+                        {
+                            markers.map((marker, index) => (
+                                <Marker 
+                                    position={marker.geocode} 
+                                    icon={customIcon}
+                                >
+                                    <Popup>
+                                        <h2>{marker.popUp}</h2>
+                                    </Popup>
+                                </Marker>
+                            ))
+                        }
+                    </MarkerClusterGroup>
                 </MapContainer>
             </div>
         </div>
