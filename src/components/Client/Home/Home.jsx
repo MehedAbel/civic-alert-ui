@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { useAuth } from '../../../context/AuthContext.jsx';
-import { Link } from 'react-router-dom';
-import Shield from '../../../assets/shield.png';
-import User from '../../../assets/user.png';
+
+import Navbar from '../Navbar/Navbar.jsx';
 
 import './Home.css';
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Icon, divIcon } from 'leaflet';
+import { Icon } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
+
+import InfrastructureIcon from '../../../assets/legend/infrastructure.png'
+import ConstructionIcon from '../../../assets/legend/construction.png';
+import TransportIcon from '../../../assets/legend/transport.png';
+import CrashIcon from '../../../assets/legend/crash.png';
 
 const Home = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
@@ -16,15 +20,24 @@ const Home = () => {
     const markers = [
         {
             geocode: [44.3000, 23.7600],
-            popUp: "PopUp1"
+            date: "31-12-1854",
+            type: "Transport",
+            description: "popup with number 1",
+            images: ["https://picsum.photos/400/250", "https://picsum.photos/400/250", "https://picsum.photos/400/250"],
         },
         {
             geocode: [44.3102, 23.7349],
-            popUp: "PopUp2"
+            date: "31-12-1854",
+            type: "Accidente",
+            description: "popup with number 2",
+            images: ["https://picsum.photos/400/250", "https://picsum.photos/400/250", "https://picsum.photos/400/250"],
         },
         {
             geocode: [44.3502, 23.8249],
-            popUp: "PopUp3"
+            date: "31-12-1854",
+            type: "Infrastructura",
+            description: "popup with number 3",
+            images: ["https://picsum.photos/400/250", "https://picsum.photos/400/250", "https://picsum.photos/400/250"],
         }
     ];
 
@@ -33,38 +46,18 @@ const Home = () => {
         iconSize: [38, 38]
     });
 
-    // const createCustomClusterIcon = (cluster) => {
-    //     return new divIcon({
-    //         html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
-    //     })
-    // };
+    // legend toggle
+    const [showLegend, setShowLegend] = useState(false);
+
+    const toggleLegend = () => {
+        setShowLegend(!showLegend);
+    }
 
     return (
         <div className='h-screen'>
-            <div className='bg-blue-400 h-20 w-full flex justify-between items-center px-5 py-2'>
-                <div>
-                    <Link to="/client/home" className='flex gap-2 items-center'>
-                        <img src={Shield} alt="" className='h-11' />
-                        <p className='text-3xl text-white font-semibold font-syne'>Civic Alert</p>
-                    </Link>
-                </div>
-                <div className='flex gap-7 items-center'>
-                    <Link to="/client/home">
-                        <p className='text-xl text-white font-semibold font-syne'>Rapoarte</p>
-                    </Link>
-                    <Link to="/client/home">
-                        <p className='text-xl text-white font-semibold font-syne'>Q/A</p>
-                    </Link>
-                    <Link to="/client/home">
-                        <p className='text-xl text-white font-semibold font-syne'>Contact</p>
-                    </Link>
-                    <Link to="/client/home">
-                        <img src={User} alt="" className='h-8' />
-                    </Link>
-                </div>
-            </div>  
-            <div className='h-full bg-blue-100'>
-                <MapContainer center={[44.3302, 23.7949]} zoom={13}>
+            <Navbar />
+            <div className='h-full bg-blue-100 relative'>
+                <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0'>
                     <TileLayer 
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -72,7 +65,6 @@ const Home = () => {
 
                     <MarkerClusterGroup
                         chunkedLoading
-                        // iconCreateFunction={createCustomClusterIcon}
                     >
                         {
                             markers.map((marker, index) => (
@@ -81,13 +73,54 @@ const Home = () => {
                                     icon={customIcon}
                                 >
                                     <Popup>
-                                        <h2>{marker.popUp}</h2>
+                                        <h2>{marker.description}</h2>
                                     </Popup>
                                 </Marker>
                             ))
                         }
                     </MarkerClusterGroup>
                 </MapContainer>
+                
+                {/* toggle legend */}
+                <div className='absolute top-4 right-4 z-50'>
+                    {!showLegend ? (
+                        <button onClick={toggleLegend} className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
+                    ) : (
+                        <div className='bg-white border border-gray-300 rounded-xl px-2 pb-2 font-syne'>
+                            <div className='flex justify-end'>
+                                <button onClick={toggleLegend} className='font-syne text-lg px-2 pt-1 font-semibold'>
+                                    x
+                                </button>
+                            </div>
+                            <div className='px-2 pb-2 pt-1 flex flex-col gap-4'>
+                                <div className='flex items-center gap-4'>
+                                    <div className='basis-1/6 flex justify-center items-center'>
+                                        <img src={InfrastructureIcon} alt="" className='h-9'/>
+                                    </div>
+                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Infrastructura</p>
+                                </div>
+                                <div className='flex items-center gap-4'>
+                                    <div className='basis-1/6 flex justify-center items-center'>
+                                        <img src={TransportIcon} alt="" className='h-9'/>
+                                    </div>
+                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Transport</p>
+                                </div>
+                                <div className='flex items-center gap-4'>
+                                    <div className='basis-1/6 flex justify-center items-center'>
+                                        <img src={ConstructionIcon} alt="" className='h-9'/>
+                                    </div>
+                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Constructii si lucrari publice</p>
+                                </div>
+                                <div className='flex items-center gap-4'>
+                                    <div className='basis-1/6 flex justify-center items-center'>
+                                        <img src={CrashIcon} alt="" className='h-9'/>
+                                    </div>
+                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Accident</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div> 
             </div>
         </div>
     );

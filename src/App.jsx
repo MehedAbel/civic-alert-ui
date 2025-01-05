@@ -12,6 +12,7 @@ import ForgotPassword from './components/Auth/ForgotPassword/ForgotPassword.jsx'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx';
 
 import ClientHome from './components/Client/Home/Home.jsx'
+import ClientReports from './components/Client/Reports/Reports.jsx';
 
 function App() {
     const { isAuthenticated, role } = useAuth();
@@ -44,6 +45,7 @@ function App() {
 				{/* CLIENT ROUTES */}
 				<Route path='/client' element={<ProtectedRoute allowedRoles={['CLIENT', 'ADMIN', 'OFFICIAL']} />}>
 					<Route path='home' element={<ClientHome />} />
+                    <Route path='reports' element={<ClientReports />} />
 				</Route>
               
 				{/* ADMIN ROUTES */}
