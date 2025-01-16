@@ -56,7 +56,7 @@ const Home = () => {
     return (
         <div className='h-screen'>
             <Navbar />
-            <div className='h-full bg-blue-100 relative'>
+            <div className='bg-blue-100 relative h-full'>
                 <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0'>
                     <TileLayer 
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
