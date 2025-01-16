@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext.jsx';
 import Shield from '../../../assets/shield.png';
 import User from '../../../assets/user.png';
 
 const Navbar = () => {
+    const { logout } = useAuth();
+
     return (
         <div className='bg-ocean-200 h-20 w-full flex justify-between items-center px-5 py-2'>
             <div>
@@ -21,6 +24,9 @@ const Navbar = () => {
                 <Link to="/client/home">
                     <p className='text-xl text-white font-semibold font-syne'>Contact</p>
                 </Link>
+                <button onClick={logout}>
+                    <p className='text-xl text-white font-semibold font-syne'>Logout</p>
+                </button>
                 <Link to="/client/home">
                     <img src={User} alt="" className='h-8' />
                 </Link>

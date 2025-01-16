@@ -71,6 +71,7 @@ const Home = () => {
                                 <Marker 
                                     position={marker.geocode} 
                                     icon={customIcon}
+                                    key={index}
                                 >
                                     <Popup>
                                         <h2>{marker.description}</h2>
