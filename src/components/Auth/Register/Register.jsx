@@ -120,8 +120,8 @@ const Register = () => {
         .then((response) => {
             if (!response.ok) {
                 {
-                    if (response.status === 400) throw Error('Email already exists');
-                    else throw Error('Response status not ok!');
+                    if (response.status === 500) throw Error('Email already exists');
+                    else throw Error('Response status not ok!');    
                 }
             } else {
                 setIsSuccessful(true);
