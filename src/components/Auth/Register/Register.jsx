@@ -137,7 +137,6 @@ const Register = () => {
     return (
         <Page>
             {isLoading && <Loader message='Registering'/>} 
-            {/* <button onClick={() => setIsSuccessful(!isSuccessful)} className='bg-blue-500 hover:bg-blue-600 rounded-md text-white p-2 w-36'> Show / Hide </button> */}
             <AuthFormContainer>
                 <Logo />
                 <Title title='Register' className={isSuccessful && 'hidden'}/>
