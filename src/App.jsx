@@ -35,6 +35,7 @@ function App() {
             <Routes>
             	{/* AUTH ROUTES */}
 				<Route path='/login' element={isAuthenticated ? <Navigate to="/" /> : <Login />}></Route>
+                
 				<Route path='/register' element={isAuthenticated ? <Navigate to="/" /> : <Register />}></Route>
 				<Route path='/civic-alert/client/complete-register' element={isAuthenticated ? <Navigate to="/" /> : <CompleteRegister />}></Route>
 				<Route path='/forgot-password' element={isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />}></Route>
