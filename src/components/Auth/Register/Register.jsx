@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext.jsx';
+
+import sha256 from 'js-sha256';
 
 import { API_URL } from '../../../config';
 import { REGEX, errorMessages } from '../../../constants/Validations.js';
@@ -14,22 +18,29 @@ import ErrorMessage from '../../Error/Error.jsx';
 import Logo from '../Form/Logo.jsx';
 
 const Register = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
-    const [isSuccessful, setIsSuccessful] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState('Registering...');
+
     const [wasFormSubmitted, setWasFormSubmitted] = useState(false);
     const [formError, setFormError] = useState('');
 
     const [formValues, setFormValues] = useState({
         firstName: '',
         lastName: '',
-        email: ''
+        email: '',
+        password: '',
+        confirmPassword: ''
     });
 
     const inputRefs = useRef({
         firstName: null,
         lastName: null,
-        email: null
+        email: null,
+        password: null,
+        confirmPassword: null
     });
 
     const formErrorRef = useRef();
@@ -52,7 +63,11 @@ const Register = () => {
     const isFieldInvalid = (fieldName) => {
         const fieldValue = formValues[fieldName];
         const isInvalidField = REGEX[fieldName] && !REGEX[fieldName].test(fieldValue);
-        return isInvalidField;
+
+        const isPasswordMismatch =
+            fieldName === 'confirmPassword' && formValues.password !== formValues.confirmPassword;
+
+        return isInvalidField || isPasswordMismatch;
     };
 
     const getErrorMessage = (fieldName) => {
@@ -86,11 +101,13 @@ const Register = () => {
         return !(
             isFieldInvalid('firstName') ||
             isFieldInvalid('lastName') ||
-            isFieldInvalid('email')
+            isFieldInvalid('email') ||
+            isFieldInvalid('password') ||
+            isFieldInvalid('confirmPassword')
         );
     };
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
         setWasFormSubmitted(true);
 
@@ -105,42 +122,57 @@ const Register = () => {
             }
         }
 
-        setIsLoading(true);
-        fetch(`${API_URL}/api/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                firstname: formValues.firstName,
-                lastname: formValues.lastName,
-                email: formValues.email,
-            })
-        })
-        .then((response) => {
+        const hashedPassword = sha256(formValues.password);
+
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    firstName: formValues.firstName,
+                    lastName: formValues.lastName,
+                    email: formValues.email,
+                    password: hashedPassword,
+                })
+            });
+
             if (!response.ok) {
-                {
-                    if (response.status === 500) throw Error('Email already exists');
-                    else throw Error('Response status not ok!');    
+                if (response.status === 500) throw Error('Email already exists');
+                else throw Error('Response status not ok!');
+            }
+
+            const data = await response.json();
+            if (data) {
+                try {
+                    setLoadingMessage('Logging in...');
+                    await login(data.email, hashedPassword);
+                } catch (error) {
+                    console.error(error.message);
+                    navigate('/login');
                 }
             } else {
-                setIsSuccessful(true);
+                throw Error('Something\'s wrong with the data received at registration');
             }
-        })
-        .catch((error) => {
+
+        } catch(error) {
             console.error(error.message);
             setFormError(error.message);
             formErrorRef.current.focus();
-        }).finally(() => setIsLoading(false));
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
         <Page>
-            {isLoading && <Loader message='Registering'/>} 
+            {isLoading && <Loader message={loadingMessage}/>} 
             <AuthFormContainer>
                 <Logo />
-                <Title title='Register' className={isSuccessful && 'hidden'}/>
-                <AuthForm onSubmit={submit} noValidate className={isSuccessful && 'hidden'}>
+                <Title title='Register'/>
+                <AuthForm onSubmit={submit} noValidate>
                     <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
                     
                     <Input
@@ -184,6 +216,34 @@ const Register = () => {
                     >
                         {getErrorMessage('email')}
                     </Input>
+
+                    <Input
+                        label='Password'
+                        id="password"
+                        type="password"
+                        value={formValues.password}
+                        onChange={(e) => updateFormValue('password', e.target.value)}
+                        ref={(ref) => (inputRefs.current.password = ref)}
+                        placeholder="Type in your password"
+                        autoComplete="new-password"
+                        required
+                    >
+                        {getErrorMessage('password')}
+                    </Input>
+
+                    <Input
+                        label='Confirm Password'
+                        id="confirm-password"
+                        type="password"
+                        value={formValues.confirmPassword}
+                        onChange={(e) => updateFormValue('confirmPassword', e.target.value)}
+                        ref={(ref) => (inputRefs.current.confirmPassword = ref)}
+                        placeholder="Retype your password"
+                        autoComplete="new-password"
+                        required
+                    >
+                        {getErrorMessage('confirmPassword')}
+                    </Input>
                     
                     <p className="text-centero mt-6 mb-3 text-sm">
                         Already have an account?{' '}
@@ -194,7 +254,6 @@ const Register = () => {
 
                     <SubmitButton name="Create Account"/>
                 </AuthForm>
-                {isSuccessful && <div className='text-blue-500 font-medium mt-3'> Please check your email for a link to set your password </div>}
             </AuthFormContainer>
         </Page>
     );
