@@ -6,7 +6,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Login from './components/Auth/Login/Login.jsx'
 import Register from './components/Auth/Register/Register.jsx'
-import CompleteRegister from './components/Auth/Register/CompleteRegister.jsx';
 import ForgotPassword from './components/Auth/ForgotPassword/ForgotPassword.jsx';
 
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx';
@@ -37,7 +36,6 @@ function App() {
 				<Route path='/login' element={isAuthenticated ? <Navigate to="/" /> : <Login />}></Route>
                 
 				<Route path='/register' element={isAuthenticated ? <Navigate to="/" /> : <Register />}></Route>
-				<Route path='/civic-alert/client/complete-register' element={isAuthenticated ? <Navigate to="/" /> : <CompleteRegister />}></Route>
 				<Route path='/forgot-password' element={isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />}></Route>
 
             	{/* ROOT ROUTE */}
