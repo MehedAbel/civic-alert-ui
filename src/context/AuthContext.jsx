@@ -40,15 +40,20 @@ export default function AuthProvider({ children }) {
             }
 
             const data = await response.json();
+            console.log(data);
             if (data) {
-                localStorage.setItem('token', data.token);
+                localStorage.setItem('token', data.accessToken);
                 localStorage.setItem('isAuthenticated', true);
-                localStorage.setItem('role', data.userType);
+                localStorage.setItem('role', data.roles[0]);
                 localStorage.setItem('email', data.email);
 
-                setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
-                setEmail(localStorage.getItem('email'));
-                setRole(localStorage.getItem('role'));
+                // setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
+                // setEmail(localStorage.getItem('email'));
+                // setRole(localStorage.getItem('role'));
+
+                setIsAuthenticated(true);
+                setEmail(data.email);
+                setRole(data.roles[0]);
 
                 navigate('/');
 
