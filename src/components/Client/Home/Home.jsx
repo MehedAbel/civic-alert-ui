@@ -5,7 +5,7 @@ import Navbar from '../Navbar/Navbar.jsx';
 
 import './Home.css';
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
@@ -16,6 +16,43 @@ import CrashIcon from '../../../assets/legend/crash.png';
 
 const Home = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [clickedLocation, setClickedLocation] = useState(null);
+    const [reportDetails, setReportDetails] = useState({
+        latitude: null,
+        longitude: null,
+        title: null,
+        description: null,
+        category: null
+    });
+
+    const MapEvents = () => {
+        useMapEvents({
+            contextmenu: (e) => {
+                e.preventDefault();
+                const { lat, lng } = e.latlng;
+                setClickedLocation({ lat, lng });
+                setModalOpen(true);
+            }
+        });
+
+        return null;
+    };
+
+    // const handleRightClick = (e) => {
+    //     e.preventDefault();
+    //     const { lat, lng } = e.latlng;
+    //     setClickedLocation({ lat, lng });
+    //     setModalOpen(true);
+    // };
+
+    const handleInputChange = (e) => {
+        setReportDetails({
+            ...reportDetails,
+            [e.target.name]: e.target.value
+        });  
+    };
 
     const markers = [
         {
@@ -62,6 +99,8 @@ const Home = () => {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
                     />
+
+                    <MapEvents />
 
                     <MarkerClusterGroup
                         chunkedLoading
@@ -121,8 +160,53 @@ const Home = () => {
                             </div>
                         </div>
                     )}
-                </div> 
+                </div>
             </div>
+            
+            {modalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg w-96">
+                    <h2 className="text-xl font-bold mb-2">Create a Report</h2>
+                    <p className="text-sm text-gray-600">Lat: {clickedLocation.lat}, Lng: {clickedLocation.lng}</p>
+
+                    <label className="block mt-3 text-sm font-medium">Report Category:</label>
+                    <select
+                        name="type"
+                        value={reportDetails.category}
+                        onChange={handleInputChange}
+                        className="w-full border p-2 rounded-md"
+                    >
+                        <option value="">Select Category</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Accident">Accident</option>
+                        <option value="Transport">Transport</option>
+                    </select>
+
+                    <label className="block mt-3 text-sm font-medium">Title:</label>
+                    <input
+                        type="text"
+                        name="title"
+                        value={reportDetails.title}
+                        onChange={handleInputChange}
+                        className="w-full border p-2 rounded-md"
+                    />
+
+                    <label className="block mt-3 text-sm font-medium">Description:</label>
+                    <textarea
+                        name="description"
+                        value={reportDetails.description}
+                        onChange={handleInputChange}
+                        className="w-full border p-2 rounded-md"
+                    />
+
+                    <div className="flex justify-end mt-4">
+                        <button onClick={() => setModalOpen(false)} className="mr-2 px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
+                        <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded-md">Submit</button>
+                    </div>
+                </div>
+            </div>
+            )}
+
         </div>
     );
 }
