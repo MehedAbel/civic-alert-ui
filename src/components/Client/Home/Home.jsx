@@ -61,6 +61,7 @@ const Home = () => {
         title: '',
         description: '',
         category: '',
+        images: []
     });
 
     const [reports, setReports] = useState([]);
@@ -80,6 +81,8 @@ const Home = () => {
                 }
 
                 const data = await response.json();
+
+                console.log(data);
                 setReports(data);
             } catch (error) {
                 console.error(error.message);
@@ -122,6 +125,14 @@ const Home = () => {
         });  
     };
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setReportDetails({
+            ...reportDetails,
+            images: [...reportDetails.images, ...files]
+        });
+    };
+
     // legend toggle
     const [showLegend, setShowLegend] = useState(false);
 
@@ -134,14 +145,28 @@ const Home = () => {
         
         setLoadingMessage('Submitting report...');
         setIsLoading(true);
+
+        const formData = new FormData();
+        formData.append('report', JSON.stringify({
+            title: reportDetails.title,
+            description: reportDetails.description,
+            category: reportDetails.category,
+            latitude: reportDetails.latitude,
+            longitude: reportDetails.longitude
+        }));
+
+        reportDetails.images.forEach((image) => {
+            formData.append(`images`, image);
+        });
+
         try {
             const response = await fetch(`${API_URL}/api/report`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify(reportDetails)
+                body: formData
             })
 
             if (!response.ok) {
@@ -153,7 +178,7 @@ const Home = () => {
 
         } catch (error) {
             console.error(error.message);
-            setFormError(error.message);
+            // setFormError(error.message);
             formErrorRef.current.focus();
         } finally {
             setIsLoading(false);
@@ -329,6 +354,16 @@ const Home = () => {
                         onChange={handleInputChange}
                         className="w-full border p-2 rounded-md"
                         required
+                    />
+
+                    <label className='block mt-3 text-sm font-medium'>Images:</label>
+                    <input 
+                        type="file" 
+                        name='images'
+                        onChange={handleImageChange}
+                        className='w-full border p-2 rounded-md'
+                        accept='image/*'
+                        multiple
                     />
 
                     <div className="flex justify-end mt-4">
