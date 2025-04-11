@@ -163,7 +163,6 @@ const Home = () => {
             const response = await fetch(`${API_URL}/api/report`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 body: formData
@@ -179,7 +178,7 @@ const Home = () => {
         } catch (error) {
             console.error(error.message);
             // setFormError(error.message);
-            formErrorRef.current.focus();
+            // formErrorRef.current.focus();
         } finally {
             setIsLoading(false);
             setLoadingMessage('');
@@ -205,7 +204,10 @@ const Home = () => {
                             chunkedLoading
                         >
                             {
-                                reports.map((report, index) => (
+                                reports.map((report, index) => {
+                                    
+                                    
+                                    return (
                                     <Marker 
                                         position={[report.latitude, report.longitude]} 
                                         icon={customIcon}
@@ -220,6 +222,8 @@ const Home = () => {
                                                     <p><span className="font-medium">Category:</span> {report.category}</p>
                                                     <p><span className="font-medium">Date:</span> {new Date(report.date).toLocaleDateString()}</p>
                                                 </div>
+
+                                                {report.imageUrls.length > 0 && <img src={report.imageUrls[0]}></img>}
                                                 <div className='w-full h-28 bg-gray-200 flex items-center justify-center'>Photo Goes Here</div>
                                                 <button 
                                                     onClick={(e) => {
@@ -236,7 +240,7 @@ const Home = () => {
                                             </div>
                                         </Popup>
                                     </Marker>
-                                ))
+                                )})
                             }
                         </MarkerClusterGroup>
                     </MyMap>
