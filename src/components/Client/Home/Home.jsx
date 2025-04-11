@@ -223,8 +223,7 @@ const Home = () => {
                                                     <p><span className="font-medium">Date:</span> {new Date(report.date).toLocaleDateString()}</p>
                                                 </div>
 
-                                                {report.imageUrls.length > 0 && <img src={report.imageUrls[0]}></img>}
-                                                <div className='w-full h-28 bg-gray-200 flex items-center justify-center'>Photo Goes Here</div>
+                                                {report.imageUrls.length > 0 && <img src={report.imageUrls[0]} height={200} width={400}></img>}
                                                 <button 
                                                     onClick={(e) => {
                                                         e.preventDefault();
