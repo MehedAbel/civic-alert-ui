@@ -195,8 +195,28 @@ const Home = () => {
         <div className='h-screen'>
             {isLoading && <Loader message={loadingMessage}/>}
             <Navbar />
-            <div className='bg-blue-100 relative h-full'>
-                <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0 {isPlacingMarker ? "cursor-crosshair" : ""}'>
+            <div className='bg-blue-100 relative h-full flex'>
+                {/* view report modal */}
+                {isViewModalOpen && selectedReport && (
+                    <div className="flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
+                            <h2 className="text-xl font-bold mb-2">{selectedReport.title}</h2>
+                            <p><span className="font-medium">Description:</span> {selectedReport.description}</p>
+                            <p><span className="font-medium">Category:</span> {selectedReport.category}</p>
+                            <p><span className="font-medium">Date:</span> {new Date(selectedReport.date).toLocaleDateString()}</p>
+                            <div className='w-full h-28 bg-gray-200 flex items-center justify-center'>Photo Goes Here</div>
+
+                            <button 
+                                onClick={closeViewModal} 
+                                className="mt-4 w-full bg-gray-500 text-white py-1 rounded hover:bg-gray-600"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
+                
+                <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0 w-full {isPlacingMarker ? "cursor-crosshair" : ""}'>
                     <TileLayer 
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -204,7 +224,7 @@ const Home = () => {
 
                     <ClickHandler onMapClick={handleMapClick} isPlacingMarker={isPlacingMarker}/>
                     
-                    <MyMap>
+                    <MyMap className=''>
                         <MarkerClusterGroup
                             chunkedLoading
                         >
@@ -274,7 +294,6 @@ const Home = () => {
                             }
                         </MarkerClusterGroup>
                     </MyMap>
-
                     
                 </MapContainer>
 
@@ -282,14 +301,14 @@ const Home = () => {
                 <button
                     className="absolute top-4 left-14 z-10 bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl"
                     disabled={createReportModalOpen || isViewModalOpen}
-                    style={{ opacity: createReportModalOpen || isViewModalOpen ? 0.5 : 1 }}
+                    style={{ display: createReportModalOpen || isViewModalOpen ? 'none' : '' }}
                     onClick={handleTogglePlaceMarker}
                 >
                     {isPlacingMarker ? "Cancel Marker" : "Place Marker"}
                 </button>
                 
                 {/* toggle legend */}
-                <div className='absolute top-4 right-4 z-10' style={{ opacity: createReportModalOpen || isViewModalOpen? 0.5 : 1 }}>
+                <div className='absolute top-4 right-4 z-10' style={{ display: createReportModalOpen || isViewModalOpen? 'none' : '' }}>
                     {!showLegend ? (
                         <button onClick={toggleLegend} disabled={createReportModalOpen || isViewModalOpen } className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
                     ) : (
@@ -331,8 +350,8 @@ const Home = () => {
             </div>
             
             {/* view report modal */}
-            {isViewModalOpen && selectedReport && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            {/* {isViewModalOpen && selectedReport && (
+                <div className="flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
                         <h2 className="text-xl font-bold mb-2">{selectedReport.title}</h2>
                         <p><span className="font-medium">Description:</span> {selectedReport.description}</p>
@@ -348,7 +367,7 @@ const Home = () => {
                         </button>
                     </div>
                 </div>
-            )}
+            )} */}
             
             {/* create report modal */}
             {createReportModalOpen && (
