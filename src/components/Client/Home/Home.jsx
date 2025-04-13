@@ -220,10 +220,10 @@ const Home = () => {
                                                 <div className="text-sm">
                                                     <p><span className="font-medium">Description:</span> {report.description}</p>
                                                     <p><span className="font-medium">Category:</span> {report.category}</p>
-                                                    <p><span className="font-medium">Date:</span> {new Date(report.date).toLocaleDateString()}</p>
+                                                    <p><span className="font-medium">Date:</span> {new Date(report.createdAt).toLocaleDateString('en-GB')}</p>
                                                 </div>
 
-                                                {report.imageUrls.length > 0 && <img src={report.imageUrls[0]} height={200} width={400}></img>}
+                                                
                                                 <button 
                                                     onClick={(e) => {
                                                         e.preventDefault();
