@@ -17,6 +17,11 @@ import CrashIcon from '../../../assets/legend/crash.png';
 import { use } from 'react';
 import { API_URL } from '../../../config.js';
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 const MyMap = ({ children }) => {
     const map = useMap();
 
@@ -223,6 +228,32 @@ const Home = () => {
                                                     <p><span className="font-medium">Date:</span> {new Date(report.createdAt).toLocaleDateString('en-GB')}</p>
                                                 </div>
 
+                                                {report.imageUrls.length > 0 ? (
+                                                    <Swiper
+                                                        modules={[Pagination]}
+                                                        spaceBetween={50}
+                                                        slidesPerView={1}
+                                                        pagination={{
+                                                            clickable: true,
+                                                        }}
+                                                        className="w-full h-56 rounded-lg overflow-hidden"
+                                                    >
+                                                        {report.imageUrls.map((image, index) => {
+                                                            return (
+                                                                <SwiperSlide key={index}>
+                                                                    <img
+                                                                        src={image}
+                                                                        className="object-cover w-full h-full"
+                                                                    />
+                                                                </SwiperSlide>
+                                                            );
+                                                        })}
+                                                    </Swiper>
+                                                ) : (
+                                                    <div className="w-full h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                                        No Image
+                                                    </div>
+                                                )}
                                                 
                                                 <button 
                                                     onClick={(e) => {
@@ -250,17 +281,17 @@ const Home = () => {
                 {/* place marker button */}
                 <button
                     className="absolute top-4 left-14 z-10 bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl"
-                    disabled={createReportModalOpen}
-                    style={{ opacity: createReportModalOpen ? 0.5 : 1 }}
+                    disabled={createReportModalOpen || isViewModalOpen}
+                    style={{ opacity: createReportModalOpen || isViewModalOpen ? 0.5 : 1 }}
                     onClick={handleTogglePlaceMarker}
                 >
                     {isPlacingMarker ? "Cancel Marker" : "Place Marker"}
                 </button>
                 
                 {/* toggle legend */}
-                <div className='absolute top-4 right-4 z-10' style={{ opacity: createReportModalOpen ? 0.5 : 1 }}>
+                <div className='absolute top-4 right-4 z-10' style={{ opacity: createReportModalOpen || isViewModalOpen? 0.5 : 1 }}>
                     {!showLegend ? (
-                        <button onClick={toggleLegend} disabled={createReportModalOpen} className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
+                        <button onClick={toggleLegend} disabled={createReportModalOpen || isViewModalOpen } className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
                     ) : (
                         <div className='bg-white border border-gray-300 rounded-xl px-2 pb-2 font-syne'>
                             <div className='flex justify-end'>
