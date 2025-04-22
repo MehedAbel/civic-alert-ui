@@ -192,14 +192,14 @@ const Home = () => {
     }
 
     return (
-        <div className='h-screen'>
+        <div className='h-screen flex flex-col'>
             {isLoading && <Loader message={loadingMessage}/>}
             <Navbar />
             <div className='bg-blue-100 relative h-full flex'>
                 {/* view report modal */}
                 {isViewModalOpen && selectedReport && (
                     <div className="flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
+                        <div className="bg-white p-6 w-96 shadow-lg h-full">
                             <h2 className="text-xl font-bold mb-2">{selectedReport.title}</h2>
                             <p><span className="font-medium">Description:</span> {selectedReport.description}</p>
                             <p><span className="font-medium">Category:</span> {selectedReport.category}</p>
@@ -215,159 +215,137 @@ const Home = () => {
                         </div>
                     </div>
                 )}
-                
-                <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0 w-full {isPlacingMarker ? "cursor-crosshair" : ""}'>
-                    <TileLayer 
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-                    />
 
-                    <ClickHandler onMapClick={handleMapClick} isPlacingMarker={isPlacingMarker}/>
+                <div className='h-full w-full relative'>
+                    <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0 w-full {isPlacingMarker ? "cursor-crosshair" : ""}'>
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+                        />
+                        <ClickHandler onMapClick={handleMapClick} isPlacingMarker={isPlacingMarker}/>
                     
-                    <MyMap className=''>
-                        <MarkerClusterGroup
-                            chunkedLoading
-                        >
-                            {
-                                reports.map((report, index) => {
-                                    
-                                    
-                                    return (
-                                    <Marker 
-                                        position={[report.latitude, report.longitude]} 
-                                        icon={customIcon}
-                                        key={index}
-                                    >
-                                        <Popup>
-                                            {/* POPUP */}
-                                            <div className="p-2 w-64">
-                                                <h2 className="text-lg font-bold border-b pb-1">{report.title}</h2>
-                                                <div className="text-sm">
-                                                    <p><span className="font-medium">Description:</span> {report.description}</p>
-                                                    <p><span className="font-medium">Category:</span> {report.category}</p>
-                                                    <p><span className="font-medium">Date:</span> {new Date(report.createdAt).toLocaleDateString('en-GB')}</p>
-                                                </div>
-
-                                                {report.imageUrls.length > 0 ? (
-                                                    <Swiper
-                                                        modules={[Pagination]}
-                                                        spaceBetween={50}
-                                                        slidesPerView={1}
-                                                        pagination={{
-                                                            clickable: true,
-                                                        }}
-                                                        className="w-full h-56 rounded-lg overflow-hidden"
-                                                    >
-                                                        {report.imageUrls.map((image, index) => {
-                                                            return (
-                                                                <SwiperSlide key={index}>
-                                                                    <img
-                                                                        src={image}
-                                                                        className="object-cover w-full h-full"
-                                                                    />
-                                                                </SwiperSlide>
-                                                            );
-                                                        })}
-                                                    </Swiper>
-                                                ) : (
-                                                    <div className="w-full h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
-                                                        No Image
+                        <MyMap className=''>
+                            <MarkerClusterGroup
+                                chunkedLoading
+                            >
+                                {
+                                    reports.map((report, index) => {
+                    
+                    
+                                        return (
+                                        <Marker
+                                            position={[report.latitude, report.longitude]}
+                                            icon={customIcon}
+                                            key={index}
+                                        >
+                                            <Popup>
+                                                {/* POPUP */}
+                                                <div className="p-2 w-64">
+                                                    <h2 className="text-lg font-bold border-b pb-1">{report.title}</h2>
+                                                    <div className="text-sm">
+                                                        <p><span className="font-medium">Description:</span> {report.description}</p>
+                                                        <p><span className="font-medium">Category:</span> {report.category}</p>
+                                                        <p><span className="font-medium">Date:</span> {new Date(report.createdAt).toLocaleDateString('en-GB')}</p>
                                                     </div>
-                                                )}
-                                                
-                                                <button 
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        openViewModal(report);
-
-                                                        const popup = e.target.closest('.leaflet-popup');
-                                                        if (popup) {
-                                                            const map = window.leafletMap;
-                                                            map.closePopup();
-                                                        }
-                                                    }} 
-                                                    className='w-full py-2 bg-ocean-200 text-white font-semibold rounded-3xl hover:bg-ocean-300 mt-3'>View Report</button>
-                                            </div>
-                                        </Popup>
-                                    </Marker>
-                                )})
-                            }
-                        </MarkerClusterGroup>
-                    </MyMap>
+                                                    {report.imageUrls.length > 0 ? (
+                                                        <Swiper
+                                                            modules={[Pagination]}
+                                                            spaceBetween={50}
+                                                            slidesPerView={1}
+                                                            pagination={{
+                                                                clickable: true,
+                                                            }}
+                                                            className="w-full h-56 rounded-lg overflow-hidden"
+                                                        >
+                                                            {report.imageUrls.map((image, index) => {
+                                                                return (
+                                                                    <SwiperSlide key={index}>
+                                                                        <img
+                                                                            src={image}
+                                                                            className="object-cover w-full h-full"
+                                                                        />
+                                                                    </SwiperSlide>
+                                                                );
+                                                            })}
+                                                        </Swiper>
+                                                    ) : (
+                                                        <div className="w-full h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                                            No Image
+                                                        </div>
+                                                    )}
                     
-                </MapContainer>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            openViewModal(report);
+                                                            const popup = e.target.closest('.leaflet-popup');
+                                                            if (popup) {
+                                                                const map = window.leafletMap;
+                                                                map.closePopup();
+                                                            }
+                                                        }}
+                                                        className='w-full py-2 bg-ocean-200 text-white font-semibold rounded-3xl hover:bg-ocean-300 mt-3'>View Report</button>
+                                                </div>
+                                            </Popup>
+                                        </Marker>
+                                    )})
+                                }
+                            </MarkerClusterGroup>
+                        </MyMap>                    
+                    </MapContainer>
 
-                {/* place marker button */}
-                <button
-                    className="absolute top-4 left-14 z-10 bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl"
-                    disabled={createReportModalOpen || isViewModalOpen}
-                    style={{ display: createReportModalOpen || isViewModalOpen ? 'none' : '' }}
-                    onClick={handleTogglePlaceMarker}
-                >
-                    {isPlacingMarker ? "Cancel Marker" : "Place Marker"}
-                </button>
-                
-                {/* toggle legend */}
-                <div className='absolute top-4 right-4 z-10' style={{ display: createReportModalOpen || isViewModalOpen? 'none' : '' }}>
-                    {!showLegend ? (
-                        <button onClick={toggleLegend} disabled={createReportModalOpen || isViewModalOpen } className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
-                    ) : (
-                        <div className='bg-white border border-gray-300 rounded-xl px-2 pb-2 font-syne'>
-                            <div className='flex justify-end'>
-                                <button onClick={toggleLegend} className='font-syne text-lg px-2 pt-1 font-semibold'>
-                                    x
-                                </button>
-                            </div>
-                            <div className='px-2 pb-2 pt-1 flex flex-col gap-4'>
-                                <div className='flex items-center gap-4'>
-                                    <div className='basis-1/6 flex justify-center items-center'>
-                                        <img src={InfrastructureIcon} alt="" className='h-9'/>
-                                    </div>
-                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Infrastructura</p>
-                                </div>
-                                <div className='flex items-center gap-4'>
-                                    <div className='basis-1/6 flex justify-center items-center'>
-                                        <img src={TransportIcon} alt="" className='h-9'/>
-                                    </div>
-                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Transport</p>
-                                </div>
-                                <div className='flex items-center gap-4'>
-                                    <div className='basis-1/6 flex justify-center items-center'>
-                                        <img src={ConstructionIcon} alt="" className='h-9'/>
-                                    </div>
-                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Constructii si lucrari publice</p>
-                                </div>
-                                <div className='flex items-center gap-4'>
-                                    <div className='basis-1/6 flex justify-center items-center'>
-                                        <img src={CrashIcon} alt="" className='h-9'/>
-                                    </div>
-                                    <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Accident</p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-            
-            {/* view report modal */}
-            {/* {isViewModalOpen && selectedReport && (
-                <div className="flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
-                        <h2 className="text-xl font-bold mb-2">{selectedReport.title}</h2>
-                        <p><span className="font-medium">Description:</span> {selectedReport.description}</p>
-                        <p><span className="font-medium">Category:</span> {selectedReport.category}</p>
-                        <p><span className="font-medium">Date:</span> {new Date(selectedReport.date).toLocaleDateString()}</p>
-                        <div className='w-full h-28 bg-gray-200 flex items-center justify-center'>Photo Goes Here</div>
+                    {/* place marker button */}
+                    <button
+                        className="absolute top-4 left-14 z-10 bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl"
+                        disabled={createReportModalOpen}
+                        style={{ opacity: createReportModalOpen ? 0.5 : 1 }}
+                        onClick={handleTogglePlaceMarker}
+                    >
+                        {isPlacingMarker ? "Cancel Marker" : "Place Marker"}
+                    </button>
 
-                        <button 
-                            onClick={closeViewModal} 
-                            className="mt-4 w-full bg-gray-500 text-white py-1 rounded hover:bg-gray-600"
-                        >
-                            Close
-                        </button>
+                    {/* toggle legend */}
+                    <div className='absolute top-4 right-4 z-10' style={{ opacity: createReportModalOpen ? 0.5 : 1 }}>
+                        {!showLegend ? (
+                            <button onClick={toggleLegend} disabled={createReportModalOpen} className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
+                        ) : (
+                            <div className='bg-white border border-gray-300 rounded-xl px-2 pb-2 font-syne'>
+                                <div className='flex justify-end'>
+                                    <button onClick={toggleLegend} className='font-syne text-lg px-2 pt-1 font-semibold'>
+                                        x
+                                    </button>
+                                </div>
+                                <div className='px-2 pb-2 pt-1 flex flex-col gap-4'>
+                                    <div className='flex items-center gap-4'>
+                                        <div className='basis-1/6 flex justify-center items-center'>
+                                            <img src={InfrastructureIcon} alt="" className='h-9'/>
+                                        </div>
+                                        <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Infrastructura</p>
+                                    </div>
+                                    <div className='flex items-center gap-4'>
+                                        <div className='basis-1/6 flex justify-center items-center'>
+                                            <img src={TransportIcon} alt="" className='h-9'/>
+                                        </div>
+                                        <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Transport</p>
+                                    </div>
+                                    <div className='flex items-center gap-4'>
+                                        <div className='basis-1/6 flex justify-center items-center'>
+                                            <img src={ConstructionIcon} alt="" className='h-9'/>
+                                        </div>
+                                        <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Constructii si lucrari publice</p>
+                                    </div>
+                                    <div className='flex items-center gap-4'>
+                                        <div className='basis-1/6 flex justify-center items-center'>
+                                            <img src={CrashIcon} alt="" className='h-9'/>
+                                        </div>
+                                        <p className='text-md text-center px-3 py-2 bg-ocean-200 text-white rounded-2xl basis-5/6'>Accident</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
-            )} */}
+            </div>
             
             {/* create report modal */}
             {createReportModalOpen && (
