@@ -9,11 +9,11 @@ export default function Contact() {
 	return (
 		<div className="flex flex-col font-syne h-screen bg-gray-100">
 			<Navbar />
-			<div className='flex flex-col p-9 gap-6'>
+			<div className='flex flex-col p-9 gap-6 bg-gray-100'>
 				<div className='flex'>
 					<h1 className='text-2xl font-semibold'>Contact</h1>
 				</div>
-				<div className='flex justify-center gap-9'>
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
                     <div className='bg-white p-4 w-full flex flex-col rounded-md justify-between'>
                         <h2 className='text-xl font-medium'>Centru de Asistenta</h2>
                         <p className='text-gray-400 text-sm'>Pentru asistenta personalizata, va rugam sa accesati centrul nostru de suport online</p>
