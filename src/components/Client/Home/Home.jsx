@@ -75,6 +75,12 @@ const getPinIcon = (category) => {
     }
 }
 
+const truncate = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+};
+  
+
 const Home = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
 
@@ -399,7 +405,7 @@ const Home = () => {
                                                         })}</p>
                                                     </div>
                                                         <p><span className="font-medium text-ocean-light">Categorie:</span> {report.category}</p>
-                                                        <p><span className="font-medium text-ocean-light">Descriere:</span> {report.description}</p>
+                                                        <p><span className="font-medium text-ocean-light">Descriere:</span> {truncate(report.description, 80)}</p>
                                                     {report.imageUrls?.length > 0 ? (
                                                         <Swiper
                                                             modules={[Pagination]}
@@ -530,6 +536,7 @@ const Home = () => {
 
                     <label className="block mt-3 text-sm font-medium">Titlu*</label>
                     <input
+                        maxLength={50}
                         type="text"
                         name="title"
                         id="title"
@@ -543,6 +550,7 @@ const Home = () => {
 
                     <label className="block mt-3 text-sm font-medium">Descriere*</label>
                     <textarea
+                        maxLength={255}
                         name="description"
                         id="description"
                         value={reportDetails.description}
