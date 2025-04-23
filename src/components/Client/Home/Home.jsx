@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../../context/AuthContext.jsx';
 
 import Navbar from '../Navbar/Navbar.jsx';
@@ -16,6 +16,7 @@ import TransportIcon from '../../../assets/legend/transport.png';
 import CrashIcon from '../../../assets/legend/crash.png';
 import { use } from 'react';
 import { API_URL } from '../../../config.js';
+import ErrorMessage from '../../Error/Error.jsx';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
@@ -71,29 +72,81 @@ const Home = () => {
 
     const [reports, setReports] = useState([]);
 
+    const [wasFormSubmitted, setWasFormSubmitted] = useState(false);
+    const [formError, setFormError] = useState('');
+
+    const inputRefs = useRef({
+        title: null,
+        description: null,
+        category: null
+    });
+
+    const formErrorRef = useRef();
+
     useEffect(() => {
-        const fetchReports = async () => {
-            try {
-                const response = await fetch(`${API_URL}/api/report/all`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                if (!response.ok) {
-                    throw Error('Failed to fetch reports');
-                }
+        setFormError('');
+    }, [reportDetails, wasFormSubmitted]);
 
-                const data = await response.json();
+    const isFieldInvalid = (fieldName) => {
+        return reportDetails[fieldName] === '';
+    };
 
-                console.log(data);
-                setReports(data);
-            } catch (error) {
-                console.error(error.message);
-            }
+    const getErrorMessage = (fieldName) => {
+        // keep the error message in the DOM for screen readers
+
+        const invalidFieldError = 'This field is required';
+        let errorMessage = null;
+
+        const fieldValue = reportDetails[fieldName];
+
+        if (!fieldValue && wasFormSubmitted) {
+            errorMessage = invalidFieldError;
         }
 
+        if (errorMessage) {
+            return <ErrorMessage errorMessage={errorMessage} id={fieldName + 'Error'} />;
+        }
+
+        return (
+            <ErrorMessage
+                errorMessage={errorMessage}
+                id={fieldName + 'Error'}
+                style={{ position: 'absolute', left: '-99999px' }}
+            />
+        );
+    };
+
+    const isFormValid = () => {
+        return !(
+            isFieldInvalid('title') ||
+            isFieldInvalid('description') ||
+            isFieldInvalid('category')
+        );
+    };
+
+    const fetchReports = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/report/all`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if (!response.ok) {
+                throw Error('Failed to fetch reports');
+            }
+
+            const data = await response.json();
+
+            console.log(data);
+            setReports(data);
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
+    useEffect(() => {
         fetchReports();
     }, []);
 
@@ -147,6 +200,18 @@ const Home = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setWasFormSubmitted(true);
+
+        if (!isFormValid()) {
+            for (let input in inputRefs.current) {
+                if (isFieldInvalid(input)) {
+                    const event = new Event('click'); // it doesn't read the error without this when using the screen reader
+                    inputRefs.current[input].focus();
+                    inputRefs.current[input].dispatchEvent(event);
+                    return;
+                }
+            }
+        }
         
         setLoadingMessage('Submitting report...');
         setIsLoading(true);
@@ -177,17 +242,24 @@ const Home = () => {
                 throw Error('Failed to submit report');
             }
 
-            const data = await response.json();
-            setReports([...reports, data]);
-
+            fetchReports();
         } catch (error) {
             console.error(error.message);
-            // setFormError(error.message);
-            // formErrorRef.current.focus();
+            setFormError(error.message);
+            formErrorRef.current.focus();
         } finally {
             setIsLoading(false);
             setLoadingMessage('');
             setCreateReportModalOpen(false);
+            setWasFormSubmitted(false);
+            setReportDetails({
+                latitude: 0,
+                longitude: 0,
+                title: '',
+                description: '',
+                category: '',
+                images: []
+            })
         }
     }
 
@@ -198,26 +270,74 @@ const Home = () => {
             <div className='bg-blue-100 relative h-full flex'>
                 {/* view report modal */}
                 {isViewModalOpen && selectedReport && (
-                    <div className="flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-6 w-96 shadow-lg h-full">
-                            <h2 className="text-xl font-bold mb-2">{selectedReport.title}</h2>
-                            <p><span className="font-medium">Description:</span> {selectedReport.description}</p>
-                            <p><span className="font-medium">Category:</span> {selectedReport.category}</p>
-                            <p><span className="font-medium">Date:</span> {new Date(selectedReport.date).toLocaleDateString()}</p>
-                            <div className='w-full h-28 bg-gray-200 flex items-center justify-center'>Photo Goes Here</div>
+                    <div className="flex items-center justify-center bg-black bg-opacity-50 relative font-syne">
+                        <div className="bg-white w-96 shadow-lg h-full">
+                        {selectedReport.imageUrls.length > 0 ? (
+                            <Swiper
+                                modules={[Pagination]}
+                                spaceBetween={50}
+                                slidesPerView={1}
+                                pagination={{
+                                    clickable: true,
+                                }}
+                                className="w-full h-56 overflow-hidden"
+                            >
+                                {selectedReport.imageUrls.map((image, index) => {
+                                    return (
+                                        <SwiperSlide key={index}>
+                                            <img
+                                                src={image}
+                                                className="object-cover w-full h-full"
+                                            />
+                                        </SwiperSlide>
+                                    );
+                                })}
+                            </Swiper>
+                        ) : (
+                            <div className="w-full h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                No Image
+                            </div>
+                        )}
+
+                            <h2 className="text-xl font-bold text-center mt-5">{selectedReport.title}</h2>
+                            <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
+                            <div className='flex justify-between mx-4 mt-5'>
+                                <div className='flex flex-col'>
+                                    <span className="font-medium text-ocean-light">Data si timpul</span>
+                                    <span className='font-semibold'> {new Date(selectedReport.createdAt).toLocaleDateString('en-GB', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false
+                                    })}
+                                    </span>
+                                </div>
+                                <div className='flex flex-col'>
+                                    <span className="font-medium text-ocean-light">Categorie</span>
+                                    <span className='font-semibold'>{selectedReport.category}</span>
+                                </div>
+                            </div>
+                            <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
+                            <div className='mt-5 mx-4'>
+                                <div className="font-medium text-ocean-light">Descriere</div>
+                                <div>{selectedReport.description}</div>
+                            </div>
+                            
 
                             <button 
                                 onClick={closeViewModal} 
-                                className="mt-4 w-full bg-gray-500 text-white py-1 rounded hover:bg-gray-600"
+                                className="absolute top-2 right-2 text-black bg-gray-400 hover:bg-gray-500 hover:text-white z-10 px-3 py-1 rounded-full"
                             >
-                                Close
+                                X
                             </button>
                         </div>
                     </div>
                 )}
 
                 <div className='h-full w-full relative'>
-                    <MapContainer center={[44.3100, 23.8100]} zoom={13} className='z-0 w-full {isPlacingMarker ? "cursor-crosshair" : ""}'>
+                    <MapContainer center={[44.3100, 23.8100]} zoom={13} className={"z-0 w-full "}>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -240,14 +360,22 @@ const Home = () => {
                                         >
                                             <Popup>
                                                 {/* POPUP */}
-                                                <div className="p-2 w-64">
-                                                    <h2 className="text-lg font-bold border-b pb-1">{report.title}</h2>
-                                                    <div className="text-sm">
-                                                        <p><span className="font-medium">Description:</span> {report.description}</p>
-                                                        <p><span className="font-medium">Category:</span> {report.category}</p>
-                                                        <p><span className="font-medium">Date:</span> {new Date(report.createdAt).toLocaleDateString('en-GB')}</p>
+                                                <div className="p-2 w-64 font-syne">
+                                                    <h2 className="text-lg font-bold text-center">{report.title}</h2>
+                                                    <hr className='mx-4 bg-ocean-light h-0.5 opacity-50 rounded-md mt-2'/>
+                                                    <div className="">
+                                                        <p><span className="font-medium text-ocean-light">Data si timpul:</span> {new Date(report.createdAt).toLocaleDateString('en-GB', {
+                                                            day: '2-digit',
+                                                            month: '2-digit',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            hour12: false
+                                                        })}</p>
                                                     </div>
-                                                    {report.imageUrls.length > 0 ? (
+                                                        <p><span className="font-medium text-ocean-light">Categorie:</span> {report.category}</p>
+                                                        <p><span className="font-medium text-ocean-light">Descriere:</span> {report.description}</p>
+                                                    {report.imageUrls?.length > 0 ? (
                                                         <Swiper
                                                             modules={[Pagination]}
                                                             spaceBetween={50}
@@ -255,7 +383,7 @@ const Home = () => {
                                                             pagination={{
                                                                 clickable: true,
                                                             }}
-                                                            className="w-full h-56 rounded-lg overflow-hidden"
+                                                            className="w-full h-44 rounded-lg overflow-hidden"
                                                         >
                                                             {report.imageUrls.map((image, index) => {
                                                                 return (
@@ -269,7 +397,7 @@ const Home = () => {
                                                             })}
                                                         </Swiper>
                                                     ) : (
-                                                        <div className="w-full h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                                        <div className="w-full h-44 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
                                                             No Image
                                                         </div>
                                                     )}
@@ -284,7 +412,9 @@ const Home = () => {
                                                                 map.closePopup();
                                                             }
                                                         }}
-                                                        className='w-full py-2 bg-ocean-200 text-white font-semibold rounded-3xl hover:bg-ocean-300 mt-3'>View Report</button>
+                                                        className='w-full py-2 bg-ocean-200 text-white font-semibold rounded-3xl hover:bg-ocean-300 mt-3'>
+                                                            Vezi Raport
+                                                    </button>
                                                 </div>
                                             </Popup>
                                         </Marker>
@@ -349,58 +479,71 @@ const Home = () => {
             
             {/* create report modal */}
             {createReportModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-white p-6 rounded-lg w-96">
-                    <h2 className="text-xl font-bold mb-2">Create a Report</h2>
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 font-syne">
+                <div className="bg-white p-6 rounded-lg w-96 relative bg-gradient-to-b">
+                    <h2 className="text-xl font-bold mb-2 text-center">Creeaza Raport</h2>
+                    <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
                     <p className="text-sm text-gray-600">Lat: {clickedLocation.lat}, Lng: {clickedLocation.lng}</p>
 
-                    <label className="block mt-3 text-sm font-medium">Report Category:</label>
+                    <label className="block mt-3 text-sm font-medium">Categorie*</label>
                     <select
                         name="category"
+                        id="category"
                         value={reportDetails.category}
                         onChange={handleInputChange}
+                        ref={(ref) => inputRefs.current.category = ref}
                         className="w-full border p-2 rounded-md"
                         required
                     >
-                        <option value="">Select Category</option>
-                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="">Selecteza o categorie</option>
+                        <option value="Infrastructure">Infrastructura</option>
                         <option value="Accident">Accident</option>
                         <option value="Transport">Transport</option>
+                        <option value="Construction">Constructii si lucrari publice</option>
                     </select>
+                    {getErrorMessage('category')}
 
-                    <label className="block mt-3 text-sm font-medium">Title:</label>
+                    <label className="block mt-3 text-sm font-medium">Titlu*</label>
                     <input
                         type="text"
                         name="title"
+                        id="title"
                         value={reportDetails.title}
                         onChange={handleInputChange}
+                        ref={(ref) => inputRefs.current.title = ref}
                         className="w-full border p-2 rounded-md"
                         required
                     />
+                    {getErrorMessage('title')}
 
-                    <label className="block mt-3 text-sm font-medium">Description:</label>
+                    <label className="block mt-3 text-sm font-medium">Descriere*</label>
                     <textarea
                         name="description"
+                        id="description"
                         value={reportDetails.description}
                         onChange={handleInputChange}
+                        ref={(ref) => inputRefs.current.description = ref}
                         className="w-full border p-2 rounded-md"
                         required
                     />
+                    {getErrorMessage('description')}
 
-                    <label className='block mt-3 text-sm font-medium'>Images:</label>
+                    <label className='block mt-3 text-sm font-medium'>Imagini</label>
                     <input 
                         type="file" 
                         name='images'
+                        id="images"
                         onChange={handleImageChange}
                         className='w-full border p-2 rounded-md'
                         accept='image/*'
                         multiple
                     />
 
-                    <div className="flex justify-end mt-4">
-                        <button onClick={() => setCreateReportModalOpen(false)} className="mr-2 px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
-                        <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded-md">Submit</button>
+                    <div className="flex justify-center mt-4">
+                        <button onClick={handleSubmit} className="px-4 py-1 bg-ocean-200 text-white rounded-lg hover:bg-ocean-light">Trimite Raport</button>
                     </div>
+
+                    <button onClick={() => setCreateReportModalOpen(false)} className="mr-2 absolute top-3 left-5 text-ocean-light rounded-md font-semibold text-4xl">{"<"}</button>
                 </div>
             </div>
             )}

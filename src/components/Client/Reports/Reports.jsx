@@ -7,7 +7,7 @@ const Reports = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
 
     return (
-        <div className='h-screen'>
+        <div className='h-screen flex flex-col'>
             <Navbar /> 
             <div className='h-full bg-blue-100 relative'>
                 
