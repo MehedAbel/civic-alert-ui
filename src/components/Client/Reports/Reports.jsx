@@ -21,13 +21,13 @@ const statusColors = {
 };
 
 export default function Reports() {
-  const { fetchWithAuth } = useAuth();
+  const { fetchWithAuth, email } = useAuth();
   const [reports, setReports] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [filter, setFilter] = useState("TOATE");
 
   useEffect(() => {
-    fetchWithAuth(`${API_URL}/api/report/all`)
+    fetchWithAuth(`${API_URL}/api/report/all-by-username/${email}`)
       .then(res => res.json())
       .then(data => setReports(data))
       .catch(console.error);
