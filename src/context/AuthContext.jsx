@@ -14,11 +14,13 @@ export default function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
     const [email, setEmail] = useState(null);
     const [role, setRole] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setIsAuthenticated(localStorage.getItem('isAuthenticated') == 'true');
         setEmail(localStorage.getItem('email'));
         setRole(localStorage.getItem('role'));
+        setLoading(false);
     }, []);
 
     async function login(email, password) {
@@ -47,13 +49,9 @@ export default function AuthProvider({ children }) {
                 localStorage.setItem('role', data.roles[0]);
                 localStorage.setItem('email', data.email);
 
-                // setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
-                // setEmail(localStorage.getItem('email'));
-                // setRole(localStorage.getItem('role'));
-
-                setIsAuthenticated(true);
-                setEmail(data.email);
-                setRole(data.roles[0]);
+                setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
+                setEmail(localStorage.getItem('email'));
+                setRole(localStorage.getItem('role'));
 
                 navigate('/');
 
@@ -103,7 +101,7 @@ export default function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{ login, logout, isAuthenticated, setIsAuthenticated, role, setRole, email, setEmail, fetchWithAuth }}>
-            {children}
+            {!loading ? children : null}
         </AuthContext.Provider>
     );
 };

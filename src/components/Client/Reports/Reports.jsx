@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext.jsx';
+import { API_URL } from '../../../config';
 
 import Navbar from '../Navbar/Navbar.jsx';
 
@@ -23,12 +24,17 @@ const Reports = () => {
 
             const data = await response.json();
 
+            console.log("this is reports page");
             console.log(data);
             setReports(data);
         } catch (error) {
             console.error(error.message);
         }
     }
+
+    useEffect(() => {
+        fetchUserReports();
+    }, []);
 
     return (
         <div className='h-screen flex flex-col'>

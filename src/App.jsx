@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 
 import { useAuth } from './context/AuthContext.jsx'
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import Login from './components/Auth/Login/Login.jsx'
 import Register from './components/Auth/Register/Register.jsx'
