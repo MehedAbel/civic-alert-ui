@@ -21,7 +21,7 @@ const Navbar = () => {
                 <Link to="/client/faq">
                     <p className='text-xl text-white font-semibold font-syne'>FAQ</p>
                 </Link>
-                <Link to="/client/home">
+                <Link to="/client/contact">
                     <p className='text-xl text-white font-semibold font-syne'>Contact</p>
                 </Link>
                 <button onClick={logout}>
