@@ -6,6 +6,30 @@ import Navbar from '../Navbar/Navbar.jsx';
 const Reports = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
 
+    const [reports, setReports] = useState([]);
+
+    const fetchUserReports = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/report/all-by-username/${email}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if (!response.ok) {
+                throw Error('Failed to fetch reports');
+            }
+
+            const data = await response.json();
+
+            console.log(data);
+            setReports(data);
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     return (
         <div className='h-screen flex flex-col'>
             <Navbar /> 

@@ -45,10 +45,35 @@ const ClickHandler = ({onMapClick, isPlacingMarker}) => {
     return null;
 };
 
-const customIcon = new Icon({
-    iconUrl: "/src/assets/pin-marker.png",
-    iconSize: [38, 38]
-});
+const getPinIcon = (category) => {
+    switch (category) {
+        case 'Infrastructura':
+            return new Icon({
+                iconUrl: "/src/assets/legend/infrastructure-pin.png",
+                iconSize: [48, 50]
+            });
+        case 'Constructii si lucrari publice':
+            return new Icon({
+                iconUrl: "/src/assets/legend/construction-pin.png",
+                iconSize: [48, 50]
+            });
+        case 'Transport':
+            return new Icon({
+                iconUrl: "/src/assets/legend/transport-pin.png",
+                iconSize: [48, 50]
+            });
+        case 'Accident':
+            return new Icon({
+                iconUrl: "/src/assets/legend/accident-pin.png",
+                iconSize: [48, 50]
+            });
+        default:
+            return new Icon({
+                iconUrl: "/src/assets/pin-marker.png",
+                iconSize: [48, 50]
+            });
+    }
+}
 
 const Home = () => {
     const { isAuthenticated, role, email, logout } = useAuth();
@@ -355,7 +380,7 @@ const Home = () => {
                                         return (
                                         <Marker
                                             position={[report.latitude, report.longitude]}
-                                            icon={customIcon}
+                                            icon={getPinIcon(report.category)}
                                             key={index}
                                         >
                                             <Popup>
@@ -496,10 +521,10 @@ const Home = () => {
                         required
                     >
                         <option value="">Selecteza o categorie</option>
-                        <option value="Infrastructure">Infrastructura</option>
+                        <option value="Infrastructura">Infrastructura</option>
                         <option value="Accident">Accident</option>
                         <option value="Transport">Transport</option>
-                        <option value="Construction">Constructii si lucrari publice</option>
+                        <option value="Constructii si lucrari publice">Constructii si lucrari publice</option>
                     </select>
                     {getErrorMessage('category')}
 
