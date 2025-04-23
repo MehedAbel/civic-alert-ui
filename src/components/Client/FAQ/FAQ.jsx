@@ -4,9 +4,9 @@ import Faq from '../../../constants/Faq.js';
 export default function FAQ() {
 
 	return (
-		<div className="flex flex-col font-syne">
+		<div className="flex flex-col font-syne bg-gray-100">
 			<Navbar />
-			<div className='flex flex-col p-9 gap-6'>
+			<div className='flex flex-col p-9 gap-6 bg-gray-100'>
 				<div className='flex flex-col items-center'>
 					<h1 className='text-2xl font-medium'>Intrebari Frecvente</h1>
 					<p className='text-gray-600'>Aveti vreo intrebare? Suntem aici sa raspundem la toate intrebarile dumneavoastra</p>
