@@ -48,7 +48,7 @@ export default function Contact() {
                                 Feedback-ul utilizatorilor ne ajuta sa imbunatatim constant serviciile si
                                 sa oferim o experienta mai buna pentru toti cetatenii
                             </p>
-                            <button className='bg-green-500 text-white px-4 py-2 rounded-md text-sm mt-3'>Completati formularul de feedback</button>
+                            <a className='bg-green-500 text-white px-4 py-2 rounded-md text-sm mt-3' href="https://form.typeform.com/to/H5LNTVSk">Completati formularul de feedback</a>
                         </div>
                         <div className='flex flex-col items-center mt-8'>
                             <hr className='w-full'/>
