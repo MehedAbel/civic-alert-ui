@@ -18,8 +18,8 @@ const Navbar = () => {
                 <Link to="/client/reports">
                     <p className='text-xl text-white font-semibold font-syne'>Rapoarte</p>
                 </Link>
-                <Link to="/client/home">
-                    <p className='text-xl text-white font-semibold font-syne'>Q/A</p>
+                <Link to="/client/faq">
+                    <p className='text-xl text-white font-semibold font-syne'>FAQ</p>
                 </Link>
                 <Link to="/client/home">
                     <p className='text-xl text-white font-semibold font-syne'>Contact</p>

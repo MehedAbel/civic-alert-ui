@@ -69,7 +69,7 @@ export default function Reports() {
           {filteredReports.map(report => (
             <div
               key={report.id}
-              className="bg-white p-4 rounded-xl shadow-lg flex flex-col space-y-2 relative"
+              className="bg-white p-4 rounded-xl shadow-lg flex flex-col space-y-2 relative max-w-7xl mx-auto"
             >
               {/* Expand/collapse */}
               <button
