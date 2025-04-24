@@ -73,7 +73,7 @@ const Login = () => {
             {isLoading && <Loader message='Logging in'/>} 
             <AuthFormContainer>
                 <Logo />
-                <Title title='Welcome'/>
+                <Title title='Bun venit'/>
                 <AuthForm onSubmit={submit} noValidate>
                     <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
 
@@ -84,19 +84,19 @@ const Login = () => {
                         value={formValues.email}
                         onChange={(e) => updateFormValue('email', e.target.value)}
                         ref={(ref) => (inputRefs.current.email = ref)}
-                        placeholder="john.doe@domain.com"
+                        placeholder="ion.popescu@exemplu.ro"
                         autoComplete="email"
                         required
                     />
 
                     <Input 
-                        label='Password'
+                        label='Parola'
                         id="password"
                         type="password"
                         value={formValues.password}
                         onChange={(e) => updateFormValue('password', e.target.value)}
                         ref={(ref) => (inputRefs.current.password = ref)}
-                        placeholder="Type in your password"
+                        placeholder="Introdu parola"
                         autoComplete="new-password"
                         required
                     />
@@ -110,21 +110,21 @@ const Login = () => {
                                 checked={rememberMe}
                                 onChange={(e) => setRememberMe(e.target.checked)}
                             />
-                            <label htmlFor="remember">Remember Me</label>
+                            <label htmlFor="remember">Tine-ma minte</label>
                         </div>
                         <a href="/forgot-password" className="text-ocean-200 hover:underline">
-                            Forgot Password?
+                            Ai uitat parola?
                         </a>
                     </div>
 
                     <p className="text-center mt-9 mb-3 text-sm">
-                        Don&apos;t have an account?{' '}
+                        Nu ai cont?{' '}
                         <a href="/register" className="text-ocean-200 hover:underline">
-                            Sign Up
+                            Inregistreaza-te
                         </a>
                     </p>
 
-                    <SubmitButton name='Login' />
+                    <SubmitButton name='Conecteaza-te' />
                 </AuthForm>
             </AuthFormContainer>
         </Page>    

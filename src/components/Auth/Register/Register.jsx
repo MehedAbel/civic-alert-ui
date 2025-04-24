@@ -50,7 +50,7 @@ const Register = () => {
     }, [formValues, wasFormSubmitted]);
 
     useEffect(() => {
-        inputRefs.current.firstName.focus();
+        inputRefs.current.lastName.focus();
     }, []);
 
     const updateFormValue = (fieldName, value) => {
@@ -171,36 +171,36 @@ const Register = () => {
             {isLoading && <Loader message={loadingMessage}/>} 
             <AuthFormContainer>
                 <Logo />
-                <Title title='Register'/>
+                <Title title='Inregistrare'/>
                 <AuthForm onSubmit={submit} noValidate>
                     <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
                     
                     <Input
-                        label='First Name'
-                        id="first-name"
-                        type="text"
-                        value={formValues.firstName}
-                        onChange={(e) => updateFormValue('firstName', e.target.value)}
-                        ref={(ref) => (inputRefs.current.firstName = ref)}
-                        placeholder="John"
-                        autoComplete="given-name"
-                        required
-                    >
-                        {getErrorMessage('firstName')}
-                    </Input>
-                    
-                    <Input
-                        label='Last Name'
+                        label='Nume'
                         id="last-name"
                         type="text"
                         value={formValues.lastName}
                         onChange={(e) => updateFormValue('lastName', e.target.value)}
                         ref={(ref) => (inputRefs.current.lastName = ref)}
-                        placeholder="Doe"
+                        placeholder="Popescu"
                         autoComplete="family-name"
                         required
                     >
                         {getErrorMessage('lastName')}
+                    </Input>
+
+                    <Input
+                        label='Prenume'
+                        id="first-name"
+                        type="text"
+                        value={formValues.firstName}
+                        onChange={(e) => updateFormValue('firstName', e.target.value)}
+                        ref={(ref) => (inputRefs.current.firstName = ref)}
+                        placeholder="Ion"
+                        autoComplete="given-name"
+                        required
+                    >
+                        {getErrorMessage('firstName')}
                     </Input>
 
                     <Input
@@ -210,7 +210,7 @@ const Register = () => {
                         value={formValues.email}
                         onChange={(e) => updateFormValue('email', e.target.value)}
                         ref={(ref) => (inputRefs.current.email = ref)}
-                        placeholder="john.doe@domain.com"
+                        placeholder="ion.popescu@exemplu.ro"
                         autoComplete="email"
                         required
                     >
@@ -218,13 +218,13 @@ const Register = () => {
                     </Input>
 
                     <Input
-                        label='Password'
+                        label='Parola'
                         id="password"
                         type="password"
                         value={formValues.password}
                         onChange={(e) => updateFormValue('password', e.target.value)}
                         ref={(ref) => (inputRefs.current.password = ref)}
-                        placeholder="Type in your password"
+                        placeholder="Introdu parola"
                         autoComplete="new-password"
                         required
                     >
@@ -232,13 +232,13 @@ const Register = () => {
                     </Input>
 
                     <Input
-                        label='Confirm Password'
+                        label='Confirma Parola'
                         id="confirm-password"
                         type="password"
                         value={formValues.confirmPassword}
                         onChange={(e) => updateFormValue('confirmPassword', e.target.value)}
                         ref={(ref) => (inputRefs.current.confirmPassword = ref)}
-                        placeholder="Retype your password"
+                        placeholder="Reintrodu parola"
                         autoComplete="new-password"
                         required
                     >
@@ -246,13 +246,13 @@ const Register = () => {
                     </Input>
                     
                     <p className="text-centero mt-6 mb-3 text-sm">
-                        Already have an account?{' '}
+                        Ai deja un cont?{' '}
                         <a href="/login" className="text-ocean-200 hover:underline">
-                            Log In
+                            Conecteaza-te
                         </a>
                     </p>
 
-                    <SubmitButton name="Create Account"/>
+                    <SubmitButton name="Creeaza cont"/>
                 </AuthForm>
             </AuthFormContainer>
         </Page>

@@ -15,9 +15,18 @@ const statusLabels = {
   SOLVED: "Rezolvat"
 };
 const statusColors = {
-  OPEN: "text-orange-500",
-  IN_PROGRESS: "text-yellow-500",
-  SOLVED: "text-gray-500"
+  OPEN: {
+	text: "text-ocean-200",
+	bg: "bg-ocean-200"
+  },
+  IN_PROGRESS: {
+	text: "text-yellow-500",
+	bg: "bg-yellow-500"
+  },
+  SOLVED: {
+	text: "text-green-500",
+	bg: "bg-green-500"
+  }
 };
 
 export default function Reports() {
@@ -97,28 +106,30 @@ export default function Reports() {
               </div>
               {/* Stepper */}
               <div className="flex justify-between items-center px-2 pt-5">
-                {statusSteps.map((step, index) => (
-                  <div key={step} className="flex-1 flex flex-col items-center">
-                    <div
-                      className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${
-                        report.status === step ||
-                        statusSteps.indexOf(report.status) > index
-                          ? "border-ocean-200 bg-ocean-200 text-white"
-                          : "border-gray-300 text-gray-400"
-                      }`}
-                    >
-                      {report.status === step ||
-                        statusSteps.indexOf(report.status) > index ? ("✓") : (index + 1) }
-                    </div>
-                    <span
-                      className={`text-sm mt-1 ${
-                        statusColors[step] || "text-gray-400"
-                      }`}
-                    >
-                      {statusLabels[step]}
-                    </span>
-                  </div>
-                ))}
+			  {statusSteps.map((step, index) => {
+				const currentIndex = statusSteps.indexOf(report.status);
+				const isActive = index <= currentIndex;
+					return (
+						<div key={step} className="flex-1 flex flex-col items-center">
+						<div
+							className={`w-8 h-8 flex items-center justify-center rounded-full border-2 ${
+							isActive
+								? `border-none ${statusColors[report.status].bg} text-white`
+								: "border-gray-300 text-gray-400"
+							}`}
+						>
+							{isActive ? "✓" : index + 1}
+						</div>
+						<span
+							className={`text-sm mt-1 ${
+							isActive ? statusColors[report.status].text : "text-gray-400"
+							}`}
+						>
+							{statusLabels[step]}
+						</span>
+						</div>
+					);
+				})}
               </div>
               
               {/* Expanded content */}
