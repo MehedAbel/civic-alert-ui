@@ -4,7 +4,11 @@ import SecUser from '../../../assets/secUser.png';
 import LogoutIcon from '../../../assets/logout.png';
 import EditIcon from '../../../assets/edit.png';
 import { useAuth } from "../../../context/AuthContext.jsx";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+import Input from '../../Auth/Form/Input.jsx';
+import ErrorMessage from '../../Error/Error.jsx';
+import { REGEX, errorMessages } from '../../../constants/Validations.js';
 
 export default function Profile() { 
     const { logout, email, firstName, lastName } = useAuth();
@@ -17,11 +21,64 @@ export default function Profile() {
 
     const [editMode, setEditMode] = useState(false);
 
+    const [wasFormSubmitted, setWasFormSubmitted] = useState(false);
+    const [formError, setFormError] = useState('');
+
+    const inputRefs = useRef({
+        firstName: null,
+        lastName: null,
+        email: null
+    });
+    
+    const formErrorRef = useRef();
+
+    useEffect(() => {
+        setFormError('');
+    }, [userData, wasFormSubmitted]);
+    
+    useEffect(() => {
+        inputRefs.current.lastName.focus();
+    }, []);
+
     const handleInputChange = (e) => {
         setUserData({
             ...userData,
             [e.target.name]: e.target.value
         });  
+    };
+
+    const isFieldInvalid = (fieldName) => {
+        const fieldValue = userData[fieldName];
+        const isInvalidField = REGEX[fieldName] && !REGEX[fieldName].test(fieldValue);
+
+        return isInvalidField;
+    };
+
+    const getErrorMessage = (fieldName) => {
+        const fieldValue = userData[fieldName];
+
+        let errorMessage = null;
+        const emptyFieldError = errorMessages['emptyField'];
+        const invalidFieldError = errorMessages[fieldName];
+
+        if (!fieldValue && wasFormSubmitted) {
+            errorMessage = emptyFieldError;
+        } else if (fieldValue && isFieldInvalid(fieldName)) {
+            errorMessage = invalidFieldError;
+        }
+
+        if (errorMessage) {
+            return <ErrorMessage errorMessage={errorMessage} id={fieldName + 'Error'} />;
+        }
+
+        // keep the error message in the DOM for screen readers
+        return (
+            <ErrorMessage
+                errorMessage={invalidFieldError}
+                id={fieldName + 'Error'}
+                style={{ position: 'absolute', left: '-99999px' }}
+            />
+        );
     };
 
     const handleSave = () => {
@@ -50,41 +107,51 @@ export default function Profile() {
                         <img src={UserIcon} alt="User Icon" className='h-20'/>
                         <h3 className='text-ocean-200 font-medium text-lg mt-1'>{firstName + " " + lastName}</h3>
                         <div className='flex flex-col w-full gap-3 pb-4'>
+                            <ErrorMessage errorMessage={formError} ariaLive="assertive" ref={formErrorRef} className={`${formError ? 'block' : 'hidden'}`}/>
+                                
                             <div>
                                 <label htmlFor="lastName">Nume</label>
                                 <input
                                     type="text"
                                     id="lastName"
-                                    name='lastName'
+                                    name="lastName"
                                     value={userData.lastName}
                                     onChange={handleInputChange}
                                     className='w-full py-1 px-2 border border-gray-300 rounded-md text-gray-500'
+                                    ref={(ref) => (inputRefs.current.lastName = ref)}
                                     disabled={!editMode}
                                 />
+                                {getErrorMessage('lastName')}
                             </div>
+
                             <div>
                                 <label htmlFor="firstName">Prenume</label>
                                 <input
                                     type="text"
                                     id="firstName"
-                                    name='firstName'
+                                    name="firstName"
                                     value={userData.firstName}
                                     onChange={handleInputChange}
                                     className='w-full py-1 px-2 border border-gray-300 rounded-md text-gray-500'
+                                    ref={(ref) => (inputRefs.current.firstName = ref)}
                                     disabled={!editMode}
                                 />
+                                {getErrorMessage('firstName')}
                             </div>
+
                             <div>
                                 <label htmlFor="email">Email</label>
                                 <input
                                     type="text"
                                     id="email"
-                                    name='email'
+                                    name="email"
                                     value={userData.email}
                                     onChange={handleInputChange}
                                     className='w-full py-1 px-2 border border-gray-300 rounded-md text-gray-500'
+                                    ref={(ref) => (inputRefs.current.email = ref)}
                                     disabled={!editMode}
                                 />
+                                {getErrorMessage('email')}
                             </div>
                         </div>
                     </div>
