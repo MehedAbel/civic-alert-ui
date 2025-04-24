@@ -33,7 +33,7 @@ function App() {
     }
 
     return (
-        <div className='app-container'>
+        <div className='app-container h-full bg-gray-100'>
             <Routes>
             	{/* AUTH ROUTES */}
 				<Route path='/login' element={isAuthenticated ? <Navigate to="/" /> : <Login />}></Route>

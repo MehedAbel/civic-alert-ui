@@ -15,6 +15,8 @@ export default function Profile() {
         lastName
     });
 
+    const [editMode, setEditMode] = useState(false);
+
     const handleInputChange = (e) => {
         setUserData({
             ...userData,
@@ -25,8 +27,6 @@ export default function Profile() {
     const handleSave = () => {
         setEditMode(false);
     }
-
-    const [editMode, setEditMode] = useState(false);
 
 	return (
 		<div className="flex flex-col font-syne h-screen bg-gray-100">
@@ -45,7 +45,7 @@ export default function Profile() {
                             </button>)
                     }
 				</div>
-				<div className='flex gap-6'>
+				<div className='flex gap-6 flex-col md:flex-row items-center md:items-start'>
                     <div className='flex flex-col items-center bg-white flex-1 max-w-96 p-5 rounded-lg shadow-lg'>
                         <img src={UserIcon} alt="User Icon" className='h-20'/>
                         <h3 className='text-ocean-200 font-medium text-lg mt-1'>{firstName + " " + lastName}</h3>

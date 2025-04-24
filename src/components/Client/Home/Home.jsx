@@ -456,24 +456,44 @@ const Home = () => {
                     </MapContainer>
 
                     {/* place marker button */}
-                    <button
-                        className="absolute top-4 left-14 z-10 bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl"
-                        disabled={createReportModalOpen}
-                        style={{ opacity: createReportModalOpen ? 0.5 : 1 }}
-                        onClick={handleTogglePlaceMarker}
-                    >
-                        {isPlacingMarker ? "Cancel Marker" : "Place Marker"}
-                    </button>
+                    {
+                        isPlacingMarker ? 
+                        (
+                            <div className='bg-white border border-gray-300 rounded-2xl px-2 pb-5 font-syne absolute top-4 left-14 z-10'>
+                                <div className='flex justify-end'>
+                                    <button onClick={handleTogglePlaceMarker} className='font-syne text-lg px-2 mt-2 mb-1 font-semibold bg-gray-300 rounded-full'>
+                                        X
+                                    </button>
+                                </div>
+                                <div className='px-6 pb-2 pt-1 max-w-48 text-center'>
+                                    Faceti click pe harta unde s-a intamplat evenimentul
+                                </div>
+                            </div>
+                        ) : 
+                        (
+                            <button
+                                className="absolute top-4 left-14 z-10 bg-white border border-gray-300 rounded-2xl px-4 py-2 font-syne font-semibold text-xl"
+                                disabled={createReportModalOpen}
+                                style={{ opacity: createReportModalOpen ? 0.5 : 1 }}
+                                onClick={handleTogglePlaceMarker}
+                            >
+                                Creati un raport
+                            </button>
+                        )
+                    }
 
                     {/* toggle legend */}
                     <div className='absolute top-4 right-4 z-10' style={{ opacity: createReportModalOpen ? 0.5 : 1 }}>
                         {!showLegend ? (
-                            <button onClick={toggleLegend} disabled={createReportModalOpen} className='bg-white border border-gray-300 rounded-md px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
+                            <button 
+                                onClick={toggleLegend} 
+                                disabled={createReportModalOpen} 
+                                className='bg-white border border-gray-300 rounded-2xl px-4 py-2 font-syne font-semibold text-xl'>Legenda</button>
                         ) : (
-                            <div className='bg-white border border-gray-300 rounded-xl px-2 pb-2 font-syne'>
+                            <div className='bg-white border border-gray-300 rounded-2xl px-2 pb-5 font-syne'>
                                 <div className='flex justify-end'>
-                                    <button onClick={toggleLegend} className='font-syne text-lg px-2 pt-1 font-semibold'>
-                                        x
+                                    <button onClick={toggleLegend} className='font-syne text-lg px-2 mt-2 mb-1 font-semibold bg-gray-300 rounded-full'>
+                                        X
                                     </button>
                                 </div>
                                 <div className='px-2 pb-2 pt-1 flex flex-col gap-4'>
