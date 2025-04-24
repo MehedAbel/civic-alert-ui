@@ -8,6 +8,8 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
+import ImageGallery from '../../Swiper/ImageGallery.jsx';
+
 const statusSteps = ["OPEN", "IN_PROGRESS", "SOLVED"];
 const statusLabels = {
   OPEN: "Deschis",
@@ -135,8 +137,8 @@ export default function Reports() {
               {/* Expanded content */}
               {expanded === report.id && (
                 <div className="pt-5">
-                  <div className='flex justify-between px-6 items-center'>
-                      <div className='flex flex-col gap-2'>
+                  <div className='flex justify-between px-6 items-center flex-col lg:flex-row gap-6'>
+                      <div className='flex flex-col gap-2 shadow-lg rounded-lg p-7'>
                           <div className='flex'>
                             <p className="text-ocean-200">Categorie:</p>
                             <p>&nbsp;{report.category}</p>
@@ -150,33 +152,15 @@ export default function Reports() {
                             <p>&nbsp;{report.longitude}</p>
                           </div>
                       </div>
-                      <div className='w-96 h-56'>
-                          {report.imageUrls?.length > 0 ? (
-                                <Swiper
-                                    modules={[Pagination]}
-                                    spaceBetween={50}
-                                    slidesPerView={1}
-                                    pagination={{
-                                        clickable: true,
-                                    }}
-                                    className="w-full h-full rounded-lg overflow-hidden"
-                                >
-                                    {report.imageUrls.map((image, index) => {
-                                        return (
-                                            <SwiperSlide key={index}>
-                                                <img
-                                                    src={image}
-                                                    className="object-cover w-full h-full"
-                                                />
-                                            </SwiperSlide>
-                                        );
-                                    })}
-                                </Swiper>
-                            ) : (
-                                <div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
-                                    No Image
-                                </div>
-                            )}
+                      <div className='max-w-md'>
+							{
+								report.imageUrls?.length > 0 ? (<ImageGallery images={report.imageUrls} gallery={true} />) : 
+								(
+									<div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                    	No Image
+                                	</div>
+								)
+							}
                       </div>
 
                   </div>

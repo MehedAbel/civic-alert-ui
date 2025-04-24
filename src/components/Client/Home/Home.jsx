@@ -22,6 +22,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import ImageGallery from '../../Swiper/ImageGallery.jsx';
 
 const MyMap = ({ children }) => {
     const map = useMap();
@@ -303,32 +304,14 @@ const Home = () => {
                 {isViewModalOpen && selectedReport && (
                     <div className="flex items-center justify-center bg-black bg-opacity-50 relative font-syne">
                         <div className="bg-white w-96 shadow-lg h-full">
-                        {selectedReport.imageUrls.length > 0 ? (
-                            <Swiper
-                                modules={[Pagination]}
-                                spaceBetween={50}
-                                slidesPerView={1}
-                                pagination={{
-                                    clickable: true,
-                                }}
-                                className="w-full h-56 overflow-hidden"
-                            >
-                                {selectedReport.imageUrls.map((image, index) => {
-                                    return (
-                                        <SwiperSlide key={index}>
-                                            <img
-                                                src={image}
-                                                className="object-cover w-full h-full"
-                                            />
-                                        </SwiperSlide>
-                                    );
-                                })}
-                            </Swiper>
-                        ) : (
-                            <div className="w-full h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
-                                No Image
-                            </div>
-                        )}
+                        {
+                            selectedReport.imageUrls?.length > 0 ? (<ImageGallery images={selectedReport.imageUrls} />) : 
+                            (
+                                <div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                    No Image
+                                </div>
+                            )
+                        }
 
                             <h2 className="text-xl font-bold text-center mt-5">{selectedReport.title}</h2>
                             <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
@@ -359,7 +342,7 @@ const Home = () => {
 
                             <button 
                                 onClick={closeViewModal} 
-                                className="absolute top-2 right-2 text-black bg-gray-400 hover:bg-gray-500 hover:text-white z-10 px-3 py-1 rounded-full"
+                                className="absolute text-lg top-2 right-2 text-white bg-gray-300 hover:bg-gray-400 z-10 px-2 rounded-full font-semibold"
                             >
                                 X
                             </button>
@@ -461,7 +444,7 @@ const Home = () => {
                         (
                             <div className='bg-white border border-gray-300 rounded-2xl px-2 pb-5 font-syne absolute top-4 left-14 z-10'>
                                 <div className='flex justify-end'>
-                                    <button onClick={handleTogglePlaceMarker} className='font-syne text-lg px-2 mt-2 mb-1 font-semibold bg-gray-300 rounded-full'>
+                                    <button onClick={handleTogglePlaceMarker} className='font-syne text-lg text-white px-2 mt-2 mb-1 font-semibold bg-gray-300 hover:bg-gray-400 rounded-full'>
                                         X
                                     </button>
                                 </div>
@@ -492,7 +475,7 @@ const Home = () => {
                         ) : (
                             <div className='bg-white border border-gray-300 rounded-2xl px-2 pb-5 font-syne'>
                                 <div className='flex justify-end'>
-                                    <button onClick={toggleLegend} className='font-syne text-lg px-2 mt-2 mb-1 font-semibold bg-gray-300 rounded-full'>
+                                    <button onClick={toggleLegend} className='font-syne text-lg px-2 mt-2 mb-1 font-semibold text-white bg-gray-300 hover:bg-gray-400 rounded-full'>
                                         X
                                     </button>
                                 </div>

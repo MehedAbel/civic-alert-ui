@@ -9,3 +9,7 @@ html, body {
 #root {
     height: 100%;
 }
+
+.swiper-slide-thumb-active img {
+    border: 4px solid #3b82f6;
+}

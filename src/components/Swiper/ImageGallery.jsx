@@ -15,7 +15,7 @@ import {
 
 import { useState } from "react";
 
-export default function ImageGallery({ images }) {
+export default function ImageGallery({ images, gallery = false }) {
     const [isEnd, setIsEnd] = useState({
         left: true,
         right: true,
@@ -29,7 +29,7 @@ export default function ImageGallery({ images }) {
                 <>
                     <div className="w-full flex justify-center items-center relative">
                         <div
-                            className={`absolute nlg:static z-50 left-1 custom-swiper-button-prev cursor-pointer text-md sm:text-4xl px-4 py-2 rounded-lg bg-gray-100 mx-2 sm:mx-5 ${
+                            className={`absolute nlg:static z-50 left-1 custom-swiper-button-prev cursor-pointer text-sm md:text-md px-4 py-2 rounded-lg bg-gray-100 mx-2 sm:mx-5 ${
                                 isEnd.left ? "text-zinc-400" : "text-zinc-800"
                             }`}
                         >
@@ -75,7 +75,7 @@ export default function ImageGallery({ images }) {
                                     >
                                         <div className="swiper-zoom-container h-full w-full flex justify-center items-center">
                                             <img
-                                                src={image.path}
+                                                src={image}
                                                 className={
                                                     "object-contain max-h-full max-w-full"
                                                 }
@@ -86,14 +86,14 @@ export default function ImageGallery({ images }) {
                             })}
                         </Swiper>
                         <div
-                            className={`absolute nlg:static z-50 right-1 custom-swiper-button-next cursor-pointer text-md sm:text-4xl px-4 py-2 rounded-lg bg-gray-100 mx-2 sm:mx-5 ${
+                            className={`absolute nlg:static z-50 right-1 custom-swiper-button-next cursor-pointer text-sm md:text-md px-4 py-2 rounded-lg bg-gray-100 mx-2 sm:mx-5 ${
                                 isEnd.right ? "text-zinc-400" : "text-zinc-800"
                             }`}
                         >
                             <FontAwesomeIcon icon={faChevronRight} />
                         </div>
                     </div>
-                    {images.length > 1 && (
+                    {images.length > 1 && gallery && (
                         <Swiper
                             onSwiper={setThumbsSwiper}
                             spaceBetween={10}
@@ -117,7 +117,7 @@ export default function ImageGallery({ images }) {
                                             }
                                         >
                                             <img
-                                                src={image.path}
+                                                src={image}
                                                 className={
                                                     "object-cover h-full aspect-square border-4 border-transparent hover:border-blue-500 rounded-lg cursor-pointer"
                                                 }
