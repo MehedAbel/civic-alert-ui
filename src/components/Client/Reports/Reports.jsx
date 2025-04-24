@@ -157,7 +157,7 @@ export default function Reports() {
 								report.imageUrls?.length > 0 ? (<ImageGallery images={report.imageUrls} gallery={true} />) : 
 								(
 									<div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
-                                    	No Image
+                                    	Fara Imagini
                                 	</div>
 								)
 							}

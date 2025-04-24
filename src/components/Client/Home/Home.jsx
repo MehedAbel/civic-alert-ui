@@ -308,7 +308,7 @@ const Home = () => {
                             selectedReport.imageUrls?.length > 0 ? (<ImageGallery images={selectedReport.imageUrls} />) : 
                             (
                                 <div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
-                                    No Image
+                                    Fara Imagini
                                 </div>
                             )
                         }
