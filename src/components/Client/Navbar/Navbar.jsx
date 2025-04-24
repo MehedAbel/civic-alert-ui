@@ -7,7 +7,7 @@ const Navbar = () => {
     const { logout } = useAuth();
 
     return (
-        <div className='bg-ocean-200 h-20 w-full flex justify-between items-center px-5 py-2'>
+        <div className='bg-ocean-200 h-20 w-full flex justify-between items-center px-5 py-2 sticky top-0 z-50'>
             <div>
                 <Link to="/client/home" className='flex gap-2 items-center'>
                     <img src={Shield} alt="" className='h-11' />
