@@ -14,12 +14,16 @@ export default function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') == 'true');
     const [email, setEmail] = useState(null);
     const [role, setRole] = useState(null);
+    const [firstName, setFirstName] = useState(null);
+    const [lastName, setLastName] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setIsAuthenticated(localStorage.getItem('isAuthenticated') == 'true');
         setEmail(localStorage.getItem('email'));
         setRole(localStorage.getItem('role'));
+        setFirstName(localStorage.getItem('firstName'));
+        setLastName(localStorage.getItem('lastName'));
         setLoading(false);
     }, []);
 
@@ -48,10 +52,14 @@ export default function AuthProvider({ children }) {
                 localStorage.setItem('isAuthenticated', true);
                 localStorage.setItem('role', data.roles[0]);
                 localStorage.setItem('email', data.email);
+                localStorage.setItem('firstName', data.firstName);
+                localStorage.setItem('lastName', data.firstName);
 
                 setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
                 setEmail(localStorage.getItem('email'));
                 setRole(localStorage.getItem('role'));
+                setFirstName(localStorage.getItem('firstName'));
+                setLastName(localStorage.getItem('lastName'));
 
                 navigate('/');
 
@@ -70,9 +78,13 @@ export default function AuthProvider({ children }) {
         localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('role');
         localStorage.removeItem('email');
+        localStorage.removeItem('firstName');
+        localStorage.removeItem('lastName');
         setIsAuthenticated(false);
         setEmail(null);
         setRole(null);
+        setFirstName(null);
+        setLastName(null);
         navigate('/login');
     }
 
@@ -100,7 +112,7 @@ export default function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ login, logout, isAuthenticated, setIsAuthenticated, role, setRole, email, setEmail, fetchWithAuth }}>
+        <AuthContext.Provider value={{ login, logout, isAuthenticated, setIsAuthenticated, role, setRole, email, setEmail, firstName, lastName, fetchWithAuth }}>
             {!loading ? children : null}
         </AuthContext.Provider>
     );

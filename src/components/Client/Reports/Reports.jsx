@@ -49,7 +49,7 @@ export default function Reports() {
     <div className="flex flex-col font-syne bg-gray-100">
         <Navbar />
       {/* Filter buttons */}
-      <div className='space-y-7 p-5'>
+      <div className='space-y-7 p-9'>
           <div className="flex flex-wrap gap-2">
             {["TOATE", "OPEN", "IN_PROGRESS", "SOLVED"].map(s => (
               <button

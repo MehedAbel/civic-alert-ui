@@ -14,6 +14,7 @@ import ClientHome from './components/Client/Home/Home.jsx'
 import ClientReports from './components/Client/Reports/Reports.jsx';
 import FAQ from './components/Client/FAQ/FAQ.jsx';
 import Contact from './components/Client/Contact/Contact.jsx';
+import ClientProfile from './components/Client/Profile/Profile.jsx';
 
 function App() {
     const { isAuthenticated, role } = useAuth();
@@ -49,6 +50,7 @@ function App() {
                     <Route path='reports' element={<ClientReports />} />
                     <Route path='faq' element={<FAQ />} />
                     <Route path='contact' element={<Contact />} />
+                    <Route path='profile' element={<ClientProfile />} />
 				</Route>
               
 				{/* ADMIN ROUTES */}

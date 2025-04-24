@@ -24,10 +24,7 @@ const Navbar = () => {
                 <Link to="/client/contact">
                     <p className='text-xl text-white font-semibold font-syne'>Contact</p>
                 </Link>
-                <button onClick={logout}>
-                    <p className='text-xl text-white font-semibold font-syne'>Logout</p>
-                </button>
-                <Link to="/client/home">
+                <Link to="/client/profile">
                     <img src={User} alt="" className='h-8' />
                 </Link>
             </div>
