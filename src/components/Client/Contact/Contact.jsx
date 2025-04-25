@@ -68,7 +68,7 @@ export default function Contact() {
                             <img src={Mail} alt="" className='h-9' />
                             <div>
                                 <h3 className='text-md font-medium'>Adresa de e-mail</h3>
-                                <a className='text-sm text-gray-600 underline' href="mailto:7YHt9@example.com">7YHt9@example.com</a>
+                                <a className='text-sm text-gray-600 underline' href="mailto:alertcivic@gmail.com">alertcivic@gmail.com</a>
                                 <p className='text-xs text-gray-600'>Raspundem la emailuri in termen de 24 - 48 de ore</p>
                             </div>
                         </div>
