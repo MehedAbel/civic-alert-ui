@@ -6,12 +6,13 @@ import EditIcon from '../../../assets/edit.png';
 import { useAuth } from "../../../context/AuthContext.jsx";
 import { useState, useRef, useEffect } from "react";
 
-import Input from '../../Auth/Form/Input.jsx';
 import ErrorMessage from '../../Error/Error.jsx';
 import { REGEX, errorMessages } from '../../../constants/Validations.js';
+import Loader from '../../Modal/Loader/Loader.jsx';
+import { API_URL } from '../../../config.js';
 
 export default function Profile() { 
-    const { logout, email, firstName, lastName } = useAuth();
+    const { logout, email, firstName, lastName, token } = useAuth();
 
     const [userData, setUserData] = useState({
         email,
@@ -20,6 +21,9 @@ export default function Profile() {
     });
 
     const [editMode, setEditMode] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState('Asteapta...');
 
     const [wasFormSubmitted, setWasFormSubmitted] = useState(false);
     const [formError, setFormError] = useState('');
@@ -54,6 +58,14 @@ export default function Profile() {
         return isInvalidField;
     };
 
+    const isFormValid = () => {
+        return !(
+            isFieldInvalid('lastName') ||
+            isFieldInvalid('firstName') ||
+            isFieldInvalid('email')
+        );
+    };
+
     const getErrorMessage = (fieldName) => {
         const fieldValue = userData[fieldName];
 
@@ -81,19 +93,60 @@ export default function Profile() {
         );
     };
 
-    const handleSave = () => {
-        setEditMode(false);
+    const handleSave = async (e) => {
+        e.preventDefault();
+        setWasFormSubmitted(true);
+
+        if (!isFormValid()) {
+            for (let input in inputRefs.current) {
+                if (isFieldInvalid(input)) {
+                    const event = new Event('click'); // it doesn't read the error without this when using the screen reader
+                    inputRefs.current[input].focus();
+                    inputRefs.current[input].dispatchEvent(event);
+                    return;
+                }
+            }
+        }
+
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${API_URL}/api/auth/huh`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email
+                })
+            });
+
+            if (!response.ok) {
+                if (response.status === 500) throw Error('Email already exists');
+                else throw Error('Response status not ok!');
+            }
+
+            const data = await response.json();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+            setEditMode(false);
+        }
     }
 
 	return (
 		<div className="flex flex-col font-syne h-screen bg-gray-100">
+            {isLoading && <Loader message={loadingMessage}/>}
 			<Navbar />
 			<div className='flex flex-col p-9 gap-6 bg-gray-100'>
 				<div className='flex justify-between'>
 					<h1 className='text-2xl font-semibold'>Profilul meu</h1>
                     {
                         editMode ? 
-                            (<button className='py-1 px-2 bg-green-500 hover:bg-green-600 text-white text-lg rounded-lg' onClick={() => handleSave()}>
+                            (<button className='py-1 px-2 bg-green-500 hover:bg-green-600 text-white text-lg rounded-lg' onClick={(e) => handleSave(e)}>
                                 Salveaza
                             </button>) : 
                             (<button className='py-1 px-2 bg-ocean-200 hover:bg-ocean-300 text-white text-lg rounded-lg flex gap-1 items-center' onClick={() => setEditMode(true)}>

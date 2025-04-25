@@ -76,6 +76,21 @@ const getPinIcon = (category) => {
     }
 }
 
+const getCategoryIcon = (category) => {
+    switch (category) {
+        case 'Infrastructura':
+            return InfrastructureIcon;
+        case 'Constructii si lucrari publice':
+            return ConstructionIcon;
+        case 'Transport':
+            return TransportIcon;
+        case 'Accident':
+            return CrashIcon;
+        default:
+            return null;
+    }
+}
+
 const truncate = (text, maxLength) => {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -374,7 +389,7 @@ const Home = () => {
                                         >
                                             <Popup>
                                                 {/* POPUP */}
-                                                <div className="p-2 w-64 font-syne">
+                                                <div className="p-2 w-64 font-syne relative">
                                                     <h2 className="text-lg font-bold text-center">{report.title}</h2>
                                                     <hr className='mx-4 bg-ocean-light h-0.5 opacity-50 rounded-md mt-2'/>
                                                     <div className="">
@@ -387,7 +402,7 @@ const Home = () => {
                                                             hour12: false
                                                         })}</p>
                                                     </div>
-                                                        <p><span className="font-medium text-ocean-light">Categorie:</span> {report.category}</p>
+                                                        {/* <p><span className="font-medium text-ocean-light">Categorie:</span> {report.category}</p> */}
                                                         <p><span className="font-medium text-ocean-light">Descriere:</span> {truncate(report.description, 80)}</p>
                                                     {report.imageUrls?.length > 0 ? (
                                                         <Swiper
@@ -429,7 +444,17 @@ const Home = () => {
                                                         className='w-full py-2 bg-ocean-200 text-white font-semibold rounded-3xl hover:bg-ocean-300 mt-3'>
                                                             Vezi Raport
                                                     </button>
+                                                    <div 
+                                                        className='absolute -top-6 -left-7 bg-white rounded-full h-12 w-12 flex items-center justify-center'
+                                                        style={{
+                                                            boxShadow: '-8px 0 8px -4px rgba(0, 0, 0, 0.2)'
+                                                        }}
+                                                    >
+                                                        <img src={getCategoryIcon(report.category)} alt="Category Icon" className='h-7'/>
+                                                    </div>
+                                                    
                                                 </div>
+                                                
                                             </Popup>
                                         </Marker>
                                     )})
