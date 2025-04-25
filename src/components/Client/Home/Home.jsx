@@ -445,12 +445,12 @@ const Home = () => {
                                                             Vezi Raport
                                                     </button>
                                                     <div 
-                                                        className='absolute -top-6 -left-7 bg-white rounded-full h-12 w-12 flex items-center justify-center'
+                                                        className='absolute -top-6 -left-7 bg-white rounded-full h-12 w-12 flex items-center justify-center p-2'
                                                         style={{
                                                             boxShadow: '-8px 0 8px -4px rgba(0, 0, 0, 0.2)'
                                                         }}
                                                     >
-                                                        <img src={getCategoryIcon(report.category)} alt="Category Icon" className='h-7'/>
+                                                        <img src={getCategoryIcon(report.category)} alt="Category Icon" className='h-5'/>
                                                     </div>
                                                     
                                                 </div>
