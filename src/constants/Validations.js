@@ -7,13 +7,13 @@ const REGEX = {
 };
 
 const errorMessages = {
-    firstName: 'First Name must contain only letters and no spaces',
-    lastName: 'Last Name must contain only letters and no spaces',
-    email: 'Invalid email format',
+    firstName: 'Prenumele trebuie sa contina doar litere si sa nu contina spatii',
+    lastName: 'Numele trebuie sa contina doar litere si sa nu contina spatii',
+    email: 'Format invalid de email',
     password:
-        'Password must contain at least 8 characters including at least one upper and lowercase letter and a number.',
-    confirmPassword: 'Passwords do not match',
-    emptyField: 'This field is required'
+        'Parola trebuie sa contina cel putin 8 caractere, inclusiv cel putin o litera mare si o litera mica si un numar.',
+    confirmPassword: 'Parolele nu se potrivesc',
+    emptyField: 'Acest camp este obligatoriu'
 };
 
 export { REGEX, errorMessages };
