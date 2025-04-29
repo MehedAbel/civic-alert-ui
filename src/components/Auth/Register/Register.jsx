@@ -140,7 +140,7 @@ const Register = () => {
             });
 
             if (!response.ok) {
-                if (response.status === 500) throw Error('Email already exists');
+                if (response.status === 500) throw Error('Acest email este deja inregistrat!');
                 else throw Error('Response status not ok!');
             }
 

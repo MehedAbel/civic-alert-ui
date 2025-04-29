@@ -53,7 +53,7 @@ export default function AuthProvider({ children }) {
                 localStorage.setItem('role', data.roles[0]);
                 localStorage.setItem('email', data.email);
                 localStorage.setItem('firstName', data.firstName);
-                localStorage.setItem('lastName', data.firstName);
+                localStorage.setItem('lastName', data.lastName);
 
                 setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
                 setEmail(localStorage.getItem('email'));

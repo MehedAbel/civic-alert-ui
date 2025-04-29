@@ -317,43 +317,52 @@ const Home = () => {
             <div className='bg-blue-100 relative h-full flex'>
                 {/* view report modal */}
                 {isViewModalOpen && selectedReport && (
-                    <div className="flex items-center justify-center bg-black bg-opacity-50 relative font-syne">
-                        <div className="bg-white w-96 shadow-lg h-full">
-                        {
-                            selectedReport.imageUrls?.length > 0 ? (<ImageGallery images={selectedReport.imageUrls} />) : 
-                            (
-                                <div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
-                                    Fara Imagini
-                                </div>
-                            )
-                        }
-
-                            <h2 className="text-xl font-bold text-center mt-5">{selectedReport.title}</h2>
-                            <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
-                            <div className='flex justify-between mx-4 mt-5'>
-                                <div className='flex flex-col'>
-                                    <span className="font-medium text-ocean-light">Data si timpul</span>
-                                    <span className='font-semibold'> {new Date(selectedReport.createdAt).toLocaleDateString('en-GB', {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false
-                                    })}
-                                    </span>
-                                </div>
-                                <div className='flex flex-col'>
-                                    <span className="font-medium text-ocean-light">Categorie</span>
-                                    <span className='font-semibold'>{selectedReport.category}</span>
-                                </div>
+                    <div className="flex items-center justify-center relative font-syne">
+                        <div className="bg-white w-96 shadow-lg h-full flex flex-col justify-between">
+                            <div className='flex flex-col'>
+                                {
+                                    selectedReport.imageUrls?.length > 0 ? (<ImageGallery images={selectedReport.imageUrls} />) :
+                                    (
+                                        <div className="w-96 h-56 bg-gray-200 rounded-lg flex justify-center items-center font-mono">
+                                            Fara Imagini
+                                        </div>
+                                    )
+                                }
+                                    <h2 className="text-xl font-bold text-center mt-5">{selectedReport.title}</h2>
+                                    <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
+                                    <div className='flex justify-between mx-4 mt-5'>
+                                        <div className='flex flex-col'>
+                                            <span className="font-medium text-ocean-light">Data si timpul</span>
+                                            <span className='font-semibold'> {new Date(selectedReport.createdAt).toLocaleDateString('en-GB', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: false
+                                            })}
+                                            </span>
+                                        </div>
+                                        <div className='flex flex-col'>
+                                            <span className="font-medium text-ocean-light">Categorie</span>
+                                            <span className='font-semibold'>{selectedReport.category}</span>
+                                        </div>
+                                    </div>
+                                    <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
+                                    <div className='mt-5 mx-4 flex-grow flex flex-col overflow-hidden'>
+                                        <div className="font-medium text-ocean-light">Descriere</div>
+                                        <div>{selectedReport.description}</div>
+                                    </div>
                             </div>
-                            <hr className='mt-5 bg-ocean-light h-0.5 mx-4 opacity-50 rounded-md'/>
-                            <div className='mt-5 mx-4'>
-                                <div className="font-medium text-ocean-light">Descriere</div>
-                                <div>{selectedReport.description}</div>
+                            <div className='bg-gray-100 h-12 flex items-center justify-end px-4'>
+                                <a
+                                    target='_blank' 
+                                    rel="noopener noreferrer"
+                                    href={`https://www.google.com/maps?q=${selectedReport.latitude},${selectedReport.longitude}`} 
+                                    className='font-semibold hover:underline hover:text-ocean-200'>
+                                        Vezi in Google Maps
+                                </a>
                             </div>
-                            
 
                             <button 
                                 onClick={closeViewModal} 
