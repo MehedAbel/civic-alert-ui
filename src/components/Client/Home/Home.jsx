@@ -47,6 +47,48 @@ const ClickHandler = ({onMapClick, isPlacingMarker}) => {
     return null;
 };
 
+function ImageUpload() {
+    const [selectedFiles, setSelectedFiles] = useState([]);
+  
+    const handleFileChange = (e) => {
+      setSelectedFiles(Array.from(e.target.files));
+    };
+  
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <input 
+          type="file" 
+          id="file-upload" 
+          className="hidden" 
+          accept="image/*" 
+          multiple 
+          onChange={handleFileChange}
+        />
+        
+        <label 
+          htmlFor="file-upload" 
+          className="flex flex-col items-center justify-center w-48 h-48 border-2 border-dashed border-gray-400 rounded-lg cursor-pointer hover:border-blue-500"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-12 w-12 text-gray-400 hover:text-blue-500" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16v4m0 0h10m-10 0v-4m0-4h10m-6-6h6a2 2 0 012 2v12a2 2 0 01-2 2h-6a2 2 0 01-2-2V6a2 2 0 012-2z" />
+          </svg>
+          <span className="mt-2 text-gray-500">
+            {selectedFiles.length > 0 
+              ? `${selectedFiles.length} imagini selectate`
+              : 'Încarcă imagini'
+            }
+          </span>
+        </label>
+      </div>
+    );
+  }
+
 const getPinIcon = (category) => {
     switch (category) {
         case 'Infrastructura':
@@ -606,10 +648,20 @@ const Home = () => {
                         name='images'
                         id="images"
                         onChange={handleImageChange}
-                        className='w-full border p-2 rounded-md'
+                        className='w-full border p-2 rounded-md hidden'
                         accept='image/*'
                         multiple
                     />
+                    <label htmlFor="images" className='cursor-pointer mt-3 w-full flex justify-center items-center h-24 text-ocean-200 border border-ocean-200 border-opacity-60 rounded-lg hover:shadow-inner'>
+                        {
+                            reportDetails.images.length > 0 ? (
+                                <p>{reportDetails.images.length} imagini selectate</p>
+                            ) : 
+                            (
+                                <p>Alege Imagini</p>
+                            )
+                        }
+                    </label>
 
                     <div className="flex justify-center mt-4">
                         <button onClick={handleSubmit} className="px-4 py-1 bg-ocean-200 text-white rounded-lg hover:bg-ocean-light">Trimite Raport</button>
