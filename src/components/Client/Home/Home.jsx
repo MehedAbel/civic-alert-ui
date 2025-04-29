@@ -652,7 +652,7 @@ const Home = () => {
                         accept='image/*'
                         multiple
                     />
-                    <label htmlFor="images" className='cursor-pointer mt-3 w-full flex justify-center items-center h-24 text-ocean-200 border border-ocean-200 border-opacity-60 rounded-lg hover:shadow-inner'>
+                    <label htmlFor="images" className='cursor-pointer w-full flex justify-center items-center h-36 text-ocean-200 border border-ocean-200 border-opacity-60 rounded-lg hover:shadow-inner'>
                         {
                             reportDetails.images.length > 0 ? (
                                 <p>{reportDetails.images.length} imagini selectate</p>
