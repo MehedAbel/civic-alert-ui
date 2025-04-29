@@ -151,6 +151,15 @@ export default function Reports() {
                             <p className="text-ocean-200">Longitudine:</p>
                             <p>&nbsp;{report.longitude}</p>
                           </div>
+                          <div className='mt-3 -mb-2'>
+                            <a
+                                target='_blank' 
+                                rel="noopener noreferrer"
+                                href={`https://www.google.com/maps?q=${report.latitude},${report.longitude}`} 
+                                className='font-semibold hover:underline hover:text-ocean-200'>
+                                    Vezi in Google Maps
+                            </a>
+                          </div>
                       </div>
                       <div className='max-w-md'>
 							{
