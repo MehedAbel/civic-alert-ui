@@ -14,6 +14,7 @@ import InfrastructureIcon from '../../../assets/legend/infrastructure.png'
 import ConstructionIcon from '../../../assets/legend/construction.png';
 import TransportIcon from '../../../assets/legend/transport.png';
 import CrashIcon from '../../../assets/legend/crash.png';
+import GoogleMapsIcon from '../../../assets/google-maps.png';
 import { use } from 'react';
 import { API_URL } from '../../../config.js';
 import ErrorMessage from '../../Error/Error.jsx';
@@ -359,8 +360,9 @@ const Home = () => {
                                     target='_blank' 
                                     rel="noopener noreferrer"
                                     href={`https://www.google.com/maps?q=${selectedReport.latitude},${selectedReport.longitude}`} 
-                                    className='font-semibold hover:underline hover:text-ocean-200'>
-                                        Vezi in Google Maps
+                                    className='font-semibold hover:underline hover:text-ocean-200 flex items-center gap-2'>
+                                        <img src={GoogleMapsIcon} alt="Google Maps Icon" className='h-5'/>
+                                        <p>Vezi in Google Maps</p>
                                 </a>
                             </div>
 

@@ -9,6 +9,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import ImageGallery from '../../Swiper/ImageGallery.jsx';
+import GoogleMapsIcon from '../../../assets/google-maps.png';
 
 const statusSteps = ["OPEN", "IN_PROGRESS", "SOLVED"];
 const statusLabels = {
@@ -156,8 +157,9 @@ export default function Reports() {
                                 target='_blank' 
                                 rel="noopener noreferrer"
                                 href={`https://www.google.com/maps?q=${report.latitude},${report.longitude}`} 
-                                className='font-semibold hover:underline hover:text-ocean-200'>
-                                    Vezi in Google Maps
+                                className='font-semibold hover:underline hover:text-ocean-200 flex items-center gap-2'>
+                                    <img src={GoogleMapsIcon} alt="Google Maps Icon" className='h-5'/>
+                                    <p>Vezi in Google Maps</p>
                             </a>
                           </div>
                       </div>
