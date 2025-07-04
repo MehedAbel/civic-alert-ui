@@ -24,9 +24,11 @@ A web application that allows users to report different kinds of problems occuri
 - Spring Security
 
 ## To Run Application
-***Prerequisites:*** [Node.js & NPM](https://nodejs.org/en)
+***Prerequisites:*** 
+- [Backend](https://github.com/MehedAbel/civic-alert-api)
+- [Node.js & NPM](https://nodejs.org/en)
 
-Clone this repository. Then, set your API URL by creating a .env file in the root directory and adding: 
+Clone this repository. Then, after starting the backend (see backend repo), set your API URL by creating a .env file in the root directory and adding: 
 ```dotenv
 VITE_APP_API_URL=YOUR_URL
 ```
