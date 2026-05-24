@@ -10,6 +10,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 're
 import { Icon } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
+import 'react-leaflet-cluster/dist/assets/MarkerCluster.css';
+import 'react-leaflet-cluster/dist/assets/MarkerCluster.Default.css';
+
 import InfrastructureIcon from '../../../assets/legend/infrastructure.png'
 import ConstructionIcon from '../../../assets/legend/construction.png';
 import TransportIcon from '../../../assets/legend/transport.png';
