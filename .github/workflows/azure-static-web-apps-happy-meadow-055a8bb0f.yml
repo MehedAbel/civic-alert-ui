@@ -1,5 +1,8 @@
 name: Azure Static Web Apps CI/CD
 
+env:
+  VITE_API_URL: https://civic-alert-api-btedaxbea8agdacx.swedencentral-01.azurewebsites.net/
+
 on:
   push:
     branches:
