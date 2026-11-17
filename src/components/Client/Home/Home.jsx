@@ -219,7 +219,7 @@ const Home = () => {
 
     const fetchReports = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/report/all`, {
+            const response = await fetch(`${API_URL}/api/Report/all`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -323,7 +323,7 @@ const Home = () => {
         });
 
         try {
-            const response = await fetch(`${API_URL}/api/report`, {
+            const response = await fetch(`${API_URL}/api/Report`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

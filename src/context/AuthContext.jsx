@@ -29,7 +29,7 @@ export default function AuthProvider({ children }) {
 
     async function login(email, password) {
         try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
+            const response = await fetch(`${API_URL}/api/Auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
